@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Astro build output
+dist/
+.astro/
+.output/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS / editor noise
+.DS_Store
+*.log
+.vscode/*
+!.vscode/extensions.json
+
+# Webflow export: raw original video sources.
+# No page references these — the site plays the smaller `_mp4.mp4` / `_webm.webm`
+# transcodes alongside them. 337 MB of originals kept local, out of git history.
+webflow-export/videos/*.mp4
+!webflow-export/videos/*_mp4.mp4
