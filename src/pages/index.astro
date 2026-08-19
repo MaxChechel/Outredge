@@ -10,12 +10,16 @@ import PricingCard from '../components/PricingCard.astro';
 import LogoStrip from '../components/LogoStrip.astro';
 import Faq from '../components/Faq.astro';
 import CtaBanner from '../components/CtaBanner.astro';
+import JsonLd from '../components/JsonLd.astro';
 
 import { site } from '../data/site';
 import { getFeaturedWork } from '../lib/work';
 import { trustedBy, features, pricing, faq } from '../data/homepage';
 
+import { organizationSchema, websiteSchema } from '../lib/schema';
+
 const featuredWork = await getFeaturedWork();
+const origin = Astro.site!.origin;
 import { featuredTestimonial, gridTestimonials } from '../data/testimonials';
 ---
 
@@ -23,6 +27,9 @@ import { featuredTestimonial, gridTestimonials } from '../data/testimonials';
   title="Outredge | Marketing sites and design systems for B2B tech startups"
   description="Marketing sites and design systems for B2B tech startups in AI, dev tools, and fintech. Built in Webflow, principal-led, performance-built. Trusted by Replit, Lindy, XBOW, Sphere."
 >
+  <JsonLd schema={organizationSchema(origin)} />
+  <JsonLd schema={websiteSchema(origin)} />
+
   <!-- Hero -->
   <Section spaceTop="top" spaceBottom="lg" border>
     <div class="grid gap-2xl p-md lg:grid-cols-2 lg:items-start">

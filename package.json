@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "preview:pages": "astro build && npx --yes wrangler@4 pages dev dist --compatibility-date=2026-08-19"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.6",

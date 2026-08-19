@@ -11,6 +11,8 @@ import CtaBanner from '../../components/CtaBanner.astro';
 import Clip from '../../components/mdx/Clip.astro';
 import { testimonials } from '../../data/testimonials';
 import { ogImageUrl } from '../../lib/og';
+import JsonLd from '../../components/JsonLd.astro';
+import { caseStudySchema } from '../../lib/schema';
 
 // No `: GetStaticPaths` annotation: it widens the return type and Astro then
 // cannot infer Astro.props from the `props` returned below.
@@ -45,6 +47,8 @@ const { data } = entry;
 const { Content } = await render(entry);
 
 const ogImage = await ogImageUrl(data.thumbnail);
+const origin = Astro.site!.origin;
+const pageUrl = new URL(`/case-studies/${entry.id}`, Astro.site).href;
 
 const quote = data.testimonial
   ? testimonials.find((t) => t.workSlug === data.testimonial)
@@ -52,6 +56,19 @@ const quote = data.testimonial
 ---
 
 <BaseLayout title={`${data.title} | Outredge`} description={data.description} ogImage={ogImage}>
+  <JsonLd
+    schema={caseStudySchema({
+      origin,
+      url: pageUrl,
+      title: data.title,
+      description: data.description,
+      client: data.client,
+      year: data.year,
+      services: data.services,
+      image: new URL(ogImage, Astro.site).href,
+    })}
+  />
+
   <!-- Hero -->
   <Section spaceTop="top" spaceBottom="md" border>
     <div class="grid gap-2xl p-md lg:grid-cols-[3fr_2fr] lg:items-start">

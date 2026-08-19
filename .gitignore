@@ -11,6 +11,9 @@ dist/
 .astro/
 .output/
 
+# Cloudflare / wrangler local emulator state
+.wrangler/
+
 # Environment
 .env
 .env.*

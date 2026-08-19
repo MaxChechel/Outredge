@@ -1,0 +1,15 @@
+---
+/**
+ * Structured data.
+ *
+ * Emitted as application/ld+json, which is data rather than executable script —
+ * it does not count against the site's JavaScript budget and is not affected by
+ * the no-JS rule.
+ */
+interface Props {
+  schema: Record<string, unknown>;
+}
+const { schema } = Astro.props as Props;
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />

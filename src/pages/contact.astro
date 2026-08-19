@@ -6,10 +6,18 @@ import FormField from '../components/FormField.astro';
 import { site } from '../data/site';
 
 /**
- * The form is scaffolded but deliberately not wired: the backend decision is
- * Phase 3. There is no `action`, so it cannot silently post nowhere; the submit
- * button is disabled and labelled so the state is honest rather than broken.
+ * The form posts to a Cloudflare Pages Function (functions/api/contact.ts) and
+ * is protected by an invisible Turnstile widget, a honeypot, and a
+ * time-to-submit floor checked server-side.
+ *
+ * It stays inert until PUBLIC_TURNSTILE_SITE_KEY is set: with no key there is
+ * no verification, so the endpoint would reject every submission. Setting the
+ * key is what turns the form on — no code change, and no third-party script is
+ * loaded before then.
  */
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+const live = Boolean(turnstileKey);
+
 const services = [
   'Website design & Webflow development',
   'Webflow development (from provided design)',
@@ -51,7 +59,13 @@ const budgets = [
         </div>
       </div>
 
-      <form class="flex flex-col gap-lg" data-reveal>
+      <form
+        class="flex flex-col gap-lg"
+        data-contact-form
+        method={live ? 'POST' : undefined}
+        action={live ? '/api/contact' : undefined}
+        data-reveal
+      >
         <fieldset class="flex flex-col gap-md border-0 p-0">
           <legend class="text-eyebrow mb-2xs">Contact details</legend>
           <div class="grid gap-md sm:grid-cols-2">
@@ -105,16 +119,63 @@ const budgets = [
           </div>
         </fieldset>
 
+        {/* Honeypot. Hidden from sight and from assistive tech, and skipped by
+            the tab order — a human never reaches it, a naive bot fills it. */}
+        <div class="sr-only" aria-hidden="true">
+          <label>
+            Company website
+            <input type="text" name="company_website" tabindex="-1" autocomplete="off" />
+          </label>
+        </div>
+
+        {/* Stamped in the browser by scripts/contact.ts; the endpoint rejects
+            anything submitted in under three seconds. */}
+        <input type="hidden" name="started_at" value="" />
+
+        {
+          live && (
+            <div
+              class="cf-turnstile"
+              data-sitekey={turnstileKey}
+              data-size="invisible"
+              data-response-field-name="cf-turnstile-response"
+            />
+          )
+        }
+
         <div class="flex flex-col gap-2xs">
-          <Button type="submit" variant="primary" disabled>Submit</Button>
-          <p class="text-body-sm text-text-muted">
-            The form is not connected yet &mdash; use{' '}
-            <a href={site.bookingUrl} rel="noopener noreferrer" target="_blank">the booking link</a>{' '}
-            or email{' '}
-            <a href={`mailto:${site.email}`}>{site.email}</a> in the meantime.
-          </p>
+          <Button type="submit" variant="primary" disabled={!live}>Submit</Button>
+          {
+            !live && (
+              <p class="text-body-sm text-text-muted">
+                The form is not connected yet &mdash; use{' '}
+                <a href={site.bookingUrl} rel="noopener noreferrer" target="_blank">
+                  the booking link
+                </a>{' '}
+                or email <a href={`mailto:${site.email}`}>{site.email}</a> in the meantime.
+              </p>
+            )
+          }
+          {
+            live && (
+              <p class="text-body-sm text-text-muted">
+                Protected by Cloudflare Turnstile. You&rsquo;ll get a reply within one business day.
+              </p>
+            )
+          }
         </div>
       </form>
     </div>
   </Section>
+
+  {
+    live && (
+      <Fragment>
+        <script is:inline async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js" />
+        <script>
+          import '../scripts/contact';
+        </script>
+      </Fragment>
+    )
+  }
 </BaseLayout>

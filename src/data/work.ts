@@ -1,5 +1,6 @@
 import type { ImageMetadata } from 'astro';
 
+import xbow from '../assets/work/xbow.avif';
 import tealHealth from '../assets/work/teal-health.avif';
 import reson8 from '../assets/work/reson8.avif';
 import spherenet from '../assets/work/spherenet.avif';
@@ -24,6 +25,17 @@ export interface ExternalWork {
 }
 
 export const externalWork: ExternalWork[] = [
+  {
+    // Temporarily live-link-only: the export's XBOW case study body is Replit's
+    // Vibecon copy verbatim, so it is staged in drafts/ pending real copy.
+    // See drafts/README.md.
+    slug: 'xbow',
+    title: 'XBOW',
+    tags: 'Marketing site, Web animations',
+    liveUrl: 'https://xbow.com',
+    thumbnail: xbow,
+    order: 5,
+  },
   {
     slug: 'teal-health',
     title: 'Teal Health',

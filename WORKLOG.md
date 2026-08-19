@@ -472,3 +472,223 @@ wire it in Phase 4.
 - Phase 3 is not marked complete — yours to close.
 - Contact form is still inert, per your instruction.
 - The wordmark is still placeholder `<text>` rather than the real traced path.
+
+---
+
+## 2026-08-19 — Phase 3 closed; Phase 4: redirects, SEO, a11y, Cloudflare
+
+**Rulings applied**
+
+1. Hosting is Cloudflare Pages. Extensionless URLs **verified**, not assumed — see below.
+2. Contact form: Pages Function + invisible Turnstile + honeypot + time floor. Delivery hop proposed
+   below; **no account created anywhere**. Form stays disabled until the endpoint is live.
+3. ffmpeg approved; all 32 posters regrabbed and all 32 reviewed.
+4. XBOW claims listed below. The finding is worse than expected — read that section first.
+5. `VIDEO_BASE` untouched, awaiting your hostname.
+
+**Built**
+
+- `public/_redirects`, `public/_headers` (CSP, HSTS, frame/type/referrer policy, immutable asset
+  caching), `functions/api/contact.ts`.
+- `src/pages/sitemap.xml.ts`, `src/pages/robots.txt.ts` — hand-rolled, not `@astrojs/sitemap`:
+  `build.format: 'file'` emits `/work.html` while the public URL is `/work`, and the integration
+  derives entries from emitted filenames. Generating from the route list through the same
+  `canonicalPath()` the `<link rel="canonical">` tags use keeps them identical by construction.
+- JSON-LD: `ProfessionalService` + `WebSite` on `/`, `CreativeWork` per case study. Emitted as
+  `application/ld+json`, which is data, not executable — it does not touch the JS budget.
+- `npm run preview:pages` builds and serves through the real Pages runtime.
+
+**Cloudflare Pages behaviour — verified against `wrangler pages dev`, not assumed**
+
+| Request | Result |
+|---|---|
+| `/`, `/work`, `/contact`, `/case-studies/spherepay` | **200** — extensionless URLs served natively |
+| `/work.html` | 301 → `/work` |
+| `/work/` | 301 → `/work` |
+| `/styleguide` | 301 → `/` |
+| `/nope` | 404, serving the custom 404 page |
+| `/sitemap.xml`, `/robots.txt` | 200 |
+| `POST /api/contact` | 400, correctly rejected by the time floor |
+
+Security headers and `Cache-Control: immutable` on `/_astro/*` confirmed live on the responses.
+**This closes the Phase 1 open item on `build.format: 'file'`.**
+
+**Verified**
+
+- **axe-core sweep**, wcag2a + wcag2aa + wcag21a/aa + wcag22aa + best-practice, 11 pages × 2
+  viewports: **0 violations, 24/24 clean.**
+- 11 pages × 7 widths: no horizontal overflow.
+- One `h1` per page, no heading skips, every image with alt, no broken images.
+- 29 clips: all have poster, `aria-label`, visible toggle, no `autoplay`.
+- **Executable JS: still exactly one module, on case study pages only** (981 B raw / 543 B gzipped).
+  `/`, `/work`, `/contact`, `/404` ship none. No `.js` files in `dist`.
+- `astro check`: 0 errors, 0 warnings, 0 hints.
+
+**Lighthouse mobile, re-run behind Pages with `_headers` applied**
+
+| Page | Perf | A11y | Best practices | SEO | FCP | LCP | TBT | CLS |
+|---|---|---|---|---|---|---|---|---|
+| `/` | **100** | **100** | **100** | **100** | 0.9 s | 1.6 s | 0 ms | 0 |
+| `/case-studies/alphapoint` | **100** | **100** | **100** | **100** | 0.8 s | 1.7 s | 0 ms | 0 |
+
+**Posters regrabbed.** All 32 at 1.5 s, then all 32 reviewed as a contact sheet. Four were still
+wrong and were re-picked by rendering candidate frames and comparing:
+
+| Clip | Offset | Why |
+|---|---|---|
+| `replit-agent-3-2` | 0.5 s | 1.5 s is mid-wipe — a full-frame orange gradient |
+| `replit-agent-3-4` | 9.0 s | 1.5 s is mid-wipe; 9.0 s shows the automations UI |
+| `replit-agent-3-5` | 7.0 s | 1.5 s is an empty device frame before content loads |
+| `spherepay-cover` | 4.5 s | 1.5 s is a near-blank page before the hero paints |
+
+The other 28 are representative at 1.5 s. Offsets are recorded in `scripts/grab-posters.py`, so the
+result is reproducible. ffmpeg is installed project-locally via `imageio-ffmpeg` into `.venv` —
+nothing added to your system.
+
+---
+
+## ⚠️ XBOW — the case study is Replit's copy, verbatim
+
+You asked me to list claims in my rewritten summary that differ from the export's brief. Doing that
+turned up something bigger, and it corrects something I told you in Phase 3.
+
+**Every paragraph of the export's XBOW case study is byte-identical to `replit-vibecon`.** Not just
+the summary — the brief, all three solution paragraphs, and the result. Diffed programmatically:
+
+| Section | XBOW paragraphs | Identical to Vibecon |
+|---|---|---|
+| Brief | 1 | 1 |
+| Solution | 3 | 3 |
+| Result | 1 | 1 |
+
+Only the hero meta (client XBOW, year 2025-2026, services) and the media (XBOW-1/2/3 and two XBOW
+screenshots) are XBOW's own. The live text on outredge.com today describes *"Replit's first
+large-scale developer conference in New York City"* on XBOW's page.
+
+**Correction to my Phase 3 note.** I wrote that I had produced a truthful summary "from XBOW's own
+Brief section". That was wrong — the brief is Vibecon's. What I actually derived it from was XBOW's
+services list, its 2025-2026 year range, and its media. The summary itself stands, but the sourcing I
+claimed for it does not.
+
+**Claims in my staged summary, and what each rests on:**
+
+| Claim | Basis | Confidence |
+|---|---|---|
+| "ongoing Webflow retainer" | Year is a range, `2025-2026`; work.html tags it as a retainer | Inferred, not stated anywhere |
+| "offensive-security company" | XBOW's own site and the screenshots ("Start Your Pentest", "How XBOW Tests Like an Adversary") | Solid |
+| "new pages and sections" | Retainer inference; media shows several distinct page types | Inferred |
+| "scroll-driven animation" | Services list: "Web Animations (GSAP)" | From the export |
+| "custom form engineering" | Services list: "Forms Engineering"; screenshot shows a multi-step form | From the export |
+| "shipped continuously against a fast-moving product" | Inference from the year range | **Weakest claim — cut it if you disagree** |
+
+**What I did.** I moved the case study to `drafts/case-studies/xbow.mdx`, outside the collection
+glob, so it does not build. Shipping another client's project description on XBOW's page is not a
+risk worth taking for a portfolio site. XBOW **still appears in the work grid**, linking to
+xbow.com, via `externalWork`. `/case-studies/xbow` 301s to `/work` since the old URL is indexed.
+
+To publish: replace the three sections with real XBOW copy, move the file back into
+`src/content/case-studies/`, and delete the `xbow` entry from `externalWork` and the redirect line.
+`drafts/README.md` says the same. Recorded as deviation 11 in `AUDIT.md` §9.
+
+---
+
+## PROPOSAL — delivery hop for the contact function
+
+Nothing signed up for; no account exists. The function is written so the hop is one `fetch`.
+
+**1. Resend** — *recommendation*
+REST call, no SDK, no DNS needed to start (their onboarding domain works immediately; your own domain
+with DKIM comes later and improves deliverability). 3,000 emails/month free, then $20/month — you
+will never leave the free tier on a contact form.
+*Downside:* a third party sees submissions in transit; one more account and API key to hold.
+*Lock-in:* nil — one fetch, one env var.
+
+**2. MailChannels — I do not recommend this, and would have a year ago**
+It was the standard Workers answer because it was free and needed no account. **MailChannels ended
+the free Cloudflare Workers integration in mid-2024**; it now requires a paid MailChannels account
+with its own onboarding. It no longer has the advantage that made it the default. Flagging this
+explicitly because a lot of still-current tutorials recommend it.
+
+**3. Cloudflare Email Routing (inbound) + a Worker binding**
+Email Routing forwards inbound mail to your inbox for free, but it is inbound-only — it does not
+send. Sending needs Workers' `send_email` binding, which only delivers to **verified destination
+addresses on your own zone**. Fine for a form that only ever emails you.
+*Upside:* stays entirely inside Cloudflare; no third party sees the message; no extra account.
+*Downside:* setup is fiddlier, and `reply_to` behaviour is less flexible.
+
+**4. Store, don't send — Cloudflare D1 or KV, plus a notification**
+Write submissions to D1 and read them in a dashboard, or push a notification to Slack. Robust and
+free, but it puts your leads somewhere you have to remember to check.
+
+**Recommendation: Resend.** Ten minutes to working, free at this volume, trivially reversible. If you
+would rather no third party touched the messages at all, option 3 is the principled choice and I am
+happy to write it instead — it is maybe thirty more lines.
+
+**To go live** you set `PUBLIC_TURNSTILE_SITE_KEY` (build-time), and `TURNSTILE_SECRET_KEY`,
+`CONTACT_TO`, `CONTACT_FROM`, `RESEND_API_KEY` (function secrets). Setting the public key alone flips
+the form from inert to live markup; **I have deliberately left the button disabled until you have
+verified an end-to-end submission.**
+
+---
+
+## RE-ASK — `/approach` and `/how-we-work` redirects
+
+Still the last content decision, outstanding since Phase 0 Q1. The evidence:
+
+| | `/approach` | `/how-we-work` |
+|---|---|---|
+| Inbound links from any shipping page | **0** | **0** |
+| In the nav or footer | No | No |
+| Canonical tag | Yes — `https://www.outredge.com/approach` | Yes — `https://www.outredge.com/how-we-work` |
+| Meta description | Yes | Yes |
+| Content now lives at | `/#approach` | `/#pricing` |
+| Notes | Older standalone page; `approach_features` markup used nowhere else | Sole reason Swiper was loaded anywhere on the site |
+
+Both are orphaned in the navigation but are canonical, described, and presumably indexed — so they
+have search equity and inbound links from outside the site that we cannot see from the export.
+
+**My recommendation: 301 both to the homepage anchors.**
+
+```
+/approach        /#approach   301
+/how-we-work     /#pricing    301
+```
+
+The homepage sections are the newer, better-written versions of the same content, and a 301 preserves
+the equity. The one caveat worth knowing: **search engines ignore the fragment** — both will
+consolidate into `/`, not into a section. If you would rather these keep ranking as distinct pages,
+the alternative is to rebuild them as real pages, which is a Phase 5 conversation and needs a content
+decision, not a redirect.
+
+The rules are **not** in `_redirects` yet — the file has a comment marking where they go. Say the
+word and it is two lines.
+
+---
+
+## RECOMMENDATION — `401.html`
+
+**Drop it.** It is a Webflow platform artifact: a password-gate page posting to `/.wf_auth`, an
+endpoint that exists only inside Webflow's hosting. On Pages it has nothing to post to.
+
+If you ever need a protected route, Cloudflare Access is the right mechanism — it gates at the edge
+before the request reaches your site, needs no page of your own, and is free for small teams. That is
+a dashboard action, so yours to make.
+
+Not migrated. No redirect added: `/401` was never a page anyone linked to or landed on deliberately.
+
+---
+
+**Carried forward**
+
+- `VIDEO_BASE` — awaiting your CDN hostname.
+- Contact form — awaiting your delivery-hop choice, then keys, then I remove the disabled state after
+  a verified end-to-end submission.
+- `/approach` + `/how-we-work` — awaiting the ruling above.
+- XBOW case study copy.
+- The wordmark is still placeholder `<text>`, not the real traced path. It has survived four phases;
+  worth scheduling.
+
+**Not done**
+
+- Phase 4 is not marked complete — yours to close.
+- No DNS, no dashboard actions, no accounts created, per your instruction.

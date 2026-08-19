@@ -554,3 +554,29 @@ lede/intro style in case study bodies.
 
 `Geist-SemiBold.woff2` is declared in `@font-face` and applied by no rule; `--font--primary-bold: 700`
 has no face to serve it. Only Regular and Medium are migrated.
+
+
+---
+
+## 9. Sanctioned deviations from render fidelity
+
+The rebuild is intended to render identically to the Webflow site. These are the
+places it deliberately does not, each because the original was broken. This is the
+"identical except where the original was broken" list for the migration write-up.
+
+| # | Deviation | Why | Where |
+|---|---|---|---|
+| 1 | **Secondary text darkened** from a 50%-alpha grey to `neutral-600`. | The original measured **3.63:1** against the page background — a WCAG 2.1 AA failure (4.5:1 required for normal text) affecting the footer copyright, case study meta labels, section numbers and form placeholders. Computing the whole ramp shows only two text colours clear AA here: `neutral-950` at 19.1:1 and `neutral-600` at 7.0:1. `neutral-500` is 4.48:1 — short by 0.02 — so there is **no** accessible third step. The token was removed rather than retuned. | `global.css`, semantic layer |
+| 2 | **Heading levels made contiguous.** | The export skipped `h1 → h3` on the homepage, `/work`, `how-we-work` and all eight case studies: card titles were `h3` under an `h1` with nothing between. Card heading level is now a prop; the homepage work reel sits under a visually-hidden `h2`. | `WorkCard`, `index.astro` |
+| 3 | **Skip link target now exists.** | The export's skip link pointed at `#main`, which was defined on no shipping page, and was patched at runtime by script. `<main id="main">` is now real. | `BaseLayout` |
+| 4 | **Work card link text.** | All twelve cards on `/work` carried the screen-reader text *"Website name goes here"* — placeholder copy, live. Each card is now a single link named for its project. | `WorkCard` |
+| 5 | **Image alt text written.** | Every case study body image and work thumbnail shipped `alt=""`. Alt text was written after viewing each asset. | content collection, `WorkCard` |
+| 6 | **`"Trusted by teams at:"` is no longer an `h3`.** | It is a label, not a heading, and it put a stray node in the document outline. | `LogoStrip` |
+| 7 | **Looping video is no longer bare `autoplay`.** | Eight case studies shipped `<video autoplay loop muted>` with no control, no poster, and no lazy loading — a WCAG 2.2.2 failure, since all of them loop past five seconds. Every clip now has a visible pause/play control, a poster, `preload="none"`, and no autoplay under `prefers-reduced-motion`. | `Clip`, `clips.ts` |
+| 8 | **XBOW's live link corrected** from `vibecon.ai` to `xbow.com`. | Wrong destination in the export. | `work.ts` |
+| 9 | **Definition list made valid.** | The case study "Live website" button sat inside a `<dl>`, which may contain only `dt`/`dd` groups. | `[slug].astro` |
+| 10 | **Dev-server script dropped.** | `index.html` and `work.html` loaded `http://127.0.0.1:5502/script.js`, blocked as mixed content on HTTPS. | — |
+| 11 | **XBOW case study withheld.** | The export's XBOW body is Replit's Vibecon copy **verbatim** — every paragraph of brief, solution and result is byte-identical. Shipping it would put a description of Replit's conference page on XBOW's page. Staged in `drafts/` pending real copy; XBOW still appears in the work grid, linking to xbow.com. | `drafts/case-studies/xbow.mdx` |
+
+Type-scale quirks were **not** corrected — see §8.3. The `h6`/`large` inversion is
+transcribed faithfully as a known quirk, per ruling.

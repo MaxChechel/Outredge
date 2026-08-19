@@ -1,0 +1,33 @@
+# Cloudflare Pages redirects. Evaluated top to bottom; first match wins.
+# Pages serves build.format:"file" output at extensionless URLs natively, so
+# /work resolves to work.html without a rule. These handle the old Webflow
+# surface and the shapes crawlers have already indexed.
+
+# --- Webflow scaffolding pages, indexed but never part of the site ----------
+/styleguide            /                       301
+/example-components    /                       301
+
+# --- Trailing-slash normalisation ------------------------------------------
+# Webflow served some links with a trailing slash; trailingSlash is "never".
+/work/                 /work                   301
+/contact/              /contact                301
+/case-studies/         /work                   301
+
+# --- .html suffix -> canonical extensionless -------------------------------
+# Anything linked or bookmarked with the extension lands on the canonical URL.
+/index.html            /                       301
+/work.html             /work                   301
+/contact.html          /contact                301
+/case-studies/:slug.html  /case-studies/:slug  301
+
+# --- Case study index ------------------------------------------------------
+/case-studies          /work                   301
+
+# XBOW's case study is indexed on the old site but is withheld here: the
+# export's body is Replit's Vibecon copy verbatim. Point it at the work index
+# until real copy lands, then delete this line. See drafts/README.md.
+/case-studies/xbow     /work                   301
+
+# NOTE: /approach and /how-we-work are intentionally absent pending a ruling.
+# See WORKLOG. Until then they 404, which is worse than a redirect for two URLs
+# that are still indexed — this is the one open item blocking a clean launch.
