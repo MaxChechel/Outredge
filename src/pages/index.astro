@@ -12,8 +12,10 @@ import Faq from '../components/Faq.astro';
 import CtaBanner from '../components/CtaBanner.astro';
 
 import { site } from '../data/site';
-import { featuredWork } from '../data/work';
+import { getFeaturedWork } from '../lib/work';
 import { trustedBy, features, pricing, faq } from '../data/homepage';
+
+const featuredWork = await getFeaturedWork();
 import { featuredTestimonial, gridTestimonials } from '../data/testimonials';
 ---
 

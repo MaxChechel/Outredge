@@ -27,3 +27,7 @@ dist/
 # transcodes alongside them. 337 MB of originals kept local, out of git history.
 webflow-export/videos/*.mp4
 !webflow-export/videos/*_mp4.mp4
+
+# Clips staged locally so VIDEO_BASE is testable before the CDN pull zone exists.
+# Regenerate with scripts/stage-videos.py; they are served from the CDN in prod.
+public/videos/

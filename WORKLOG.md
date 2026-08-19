@@ -328,3 +328,147 @@ Q9 — `401.html`. Confirm the host rewrites extensionless URLs (`build.format: 
   with `caseStudy: true`, and those routes 404 until Phase 3. This is the sign-off gate, not an
   oversight.
 - The wordmark is still placeholder `<text>` rather than the real traced path.
+
+---
+
+## 2026-08-19 — Phase 2 closed; Phase 3: content, assets, video
+
+**Rulings applied**
+
+1. MDX set is `<Figure>` / `<Clip>` / `<Lede>`, plus `<CaseSection>` for the slot chrome (see below).
+2. One shared clip module per page. **520 B gzipped.**
+3. Clip a11y: visible pause/play on every clip, `aria-label` required, no autoplay under
+   `prefers-reduced-motion`. All three verified in a browser, not assumed.
+4. XBOW keeps the screenshot with `object-position: 50% 20%`; swapping the file is a one-line change
+   in `src/data/work.ts` or the frontmatter.
+5. WebM dropped — single MP4/H.264 per clip.
+
+**Built**
+
+- `src/content.config.ts` — Zod strict, `.refine()` requiring `viaUrl` whenever `via` is set.
+- All 8 case study bodies migrated to MDX; `/case-studies/[slug]` renders them.
+- `astro:assets` for every image. Work thumbnails and case study images moved out of `public/`.
+- 32 clips renamed, 32 poster frames extracted, `<Clip>` + `src/scripts/clips.ts`.
+- OG images generated through `astro:assets` — no rendering service, no new dependency.
+
+**Decisions**
+
+- *`<CaseSection>` rather than comment markers for the three slots.* MDX strips `{/* … */}` at compile
+  time, so a comment marker cannot survive to be split on. A component expresses the slot naturally,
+  owns the `01`/`02`/`03` chrome, and keeps numbering out of content. Enforcement is a check in
+  `getStaticPaths` against `entry.body`: a case study missing `brief`, `solution` or `result` throws
+  and **fails the build**, as ruled.
+- *One work ordering, derived from the collection.* `src/lib/work.ts` merges case studies with the
+  five live-link-only projects and sorts on a single `order` field. `src/data/work.ts` no longer
+  duplicates any case study metadata — the audit called that duplication out as the cause of XBOW
+  going missing, and Phase 2 had reintroduced it.
+- *`zod` is now a direct dependency.* Astro 7 marks the `z` re-export from `astro:content` as
+  deprecated, and `z.string().url()` is deprecated in Zod 4 in favour of `z.url()`. Importing zod
+  directly clears 19 warnings; it was already resolved as an Astro transitive dep, so nothing new is
+  downloaded, but relying on that implicitly would have been worse than declaring it.
+- *Videos are not in git.* `public/videos/` is gitignored and staged by `scripts/stage-videos.py`.
+  `VIDEO_BASE` in `src/lib/media.ts` currently points at `/videos` so the site is testable end to
+  end; **set it to your pull zone hostname and every clip follows.** There are no other video URLs.
+- *Posters are local, clips are remote.* Poster frames go through `astro:assets` (WebP, 1280w);
+  only the MP4 comes from the CDN.
+
+**Verified**
+
+- 12 pages × 7 widths = **84 checks, no horizontal overflow anywhere**.
+- One `h1` per page, no heading skips, every image with alt, zero broken images.
+- 32 clips: every one has a poster, an `aria-label`, a visible toggle, and **no `autoplay` attribute**.
+- Reduced motion, measured under CDP emulation on a 6-clip page:
+
+  | `prefers-reduced-motion` | clips | playing | toggles | labels |
+  |---|---|---|---|---|
+  | `no-preference` | 6 | 4 | 6 | 6 |
+  | `reduce` | 6 | **0** | 6 | 6 |
+
+- **JS: one inlined module, on case study pages only.** `/`, `/work`, `/contact`, `/404` ship zero
+  script tags. No `.js` files in `dist` — Astro inlines it at 981 B raw, **520 B gzipped in-page**.
+- `astro check`: 0 errors, 0 warnings, 0 hints.
+
+**Lighthouse, mobile** (`astro preview`, headless Chrome, default throttling):
+
+| Page | Perf | A11y | Best practices | SEO | FCP | LCP | TBT | CLS |
+|---|---|---|---|---|---|---|---|---|
+| `/` | **100** | **100** | **100** | **100** | 0.9 s | 1.6 s | 0 ms | 0 |
+| `/case-studies/alphapoint` | **100** | **100** | **100** | **100** | 0.8 s | 1.7 s | 0 ms | 0 |
+
+Alphapoint is the heaviest case study: 8.4 KB gzipped HTML and six clips, none of which fetch until
+scrolled to.
+
+**Two real defects found and fixed while measuring**
+
+1. **WCAG AA contrast failure.** `--color-text-faint` (50% of the text colour) measured **3.63:1** —
+   used for the footer copyright, case study meta labels, section numbers and form placeholders.
+   Computing the ramp against the page background shows only two text colours clear AA here:
+   neutral-950 at 19.1:1 and neutral-600 at 7.0:1. neutral-500 is **4.48:1**, under the threshold by
+   0.02. So there is no accessible third text step, and the token has been **removed** rather than
+   retuned — its usages now take `--color-text-muted`. A comment in `global.css` records why, so it
+   does not get reinvented.
+2. **Invalid `<dl>`.** The "Live website" button sat inside the case study definition list, which may
+   only contain `dt`/`dd` groups. Moved out. This was the one thing between the case study and 100 on
+   accessibility.
+
+**Video rename map.** Kebab-case, prefixed with the case study slug. Fixes the export's `Alphappint`
+typo and replaces the one opaque Cloudinary id (`t6hrdy7oqmafskweombe`). Full table in
+`scripts/stage-videos.py`; the pattern is `<slug>-cover` for the hero clip and `<slug>-<n>` or
+`<slug>-<feature>` for body clips.
+
+---
+
+## PROPOSAL — contact form backend (nothing wired, nothing signed up for)
+
+The form markup ships complete and inert: no `action`, submit disabled, a line pointing at the
+booking link and email. Four options, with what each actually costs you.
+
+**1. Cloudflare Pages Function / Worker** — *my recommendation if the site lands on Cloudflare*
+A single `functions/api/contact.ts` accepting the POST and forwarding to email via MailChannels or
+Resend. No third-party form service in the loop, no per-submission pricing, spam handling is yours to
+choose (a honeypot field plus a timestamp check stops nearly all of it without a CAPTCHA).
+*Cost:* free on Pages. *Downside:* it makes the project not-purely-static, and you own the failure
+modes. *Lock-in:* low — it is ~40 lines.
+
+**2. A form service (Formspree, Basin, Web3Forms)**
+Point `action` at their endpoint, done in one line. Submissions land in a dashboard and your inbox.
+*Cost:* roughly $8–15/month past a small free tier. *Downside:* a third party sees every brief a
+prospect sends you, and the free tiers put branding or rate limits in the way. *Lock-in:* trivial to
+leave — it is one attribute.
+
+**3. Drop the form; lead with Cal.com and email**
+The page already offers both, and the booking link is the higher-intent path. The strongest argument
+for this: the form asks seven questions of someone who has not yet decided to talk to you.
+*Cost:* nothing. *Downside:* you lose the asynchronous brief for people who will not book a call.
+
+**4. Netlify Forms** — only if you deploy to Netlify. One attribute, free tier of 100/month, then
+$19/month. Meaningfully more lock-in than the others since it is tied to the host.
+
+**Recommendation:** 1 if you are on Cloudflare, otherwise 2 with Basin. I would not pick 3 — the
+budget and engagement questions on that form are doing qualification work worth keeping.
+
+**I have not created an account, signed up, or contacted any of these.** Tell me which and I will
+wire it in Phase 4.
+
+---
+
+**Notes and carried-forward items**
+
+- **Poster frames are frame-0 grabs** from the Webflow export, and a few (`spherepay-cover`,
+  `replit-agent-3-cover`) are near-blank because the clip opens on white. Regrabbing at ~1.5 s would
+  visibly improve perceived load. It needs `ffmpeg`, which is not on this machine — say the word and
+  I will add it as a build-time tool alongside `fonttools`.
+- **`VIDEO_BASE` is `/videos`** pending your pull zone hostname. One constant,
+  `src/lib/media.ts`.
+- **XBOW's summary in the export was copy-pasted from Vibecon** — it described a Replit conference
+  landing page. I wrote a truthful summary from XBOW's own Brief section. Worth your read.
+- **XBOW still has no 3:2 thumbnail**; cropping with `object-position: 50% 20%` per your ruling.
+- *Phase 4:* Q1 — `approach.html` / `how-we-work.html` redirects, still unresolved and still indexed.
+  Q9 — `401.html`. Sitemap, JSON-LD, the redirect map, and confirming the host rewrites
+  extensionless URLs (`build.format: 'file'`).
+
+**Not done**
+
+- Phase 3 is not marked complete — yours to close.
+- Contact form is still inert, per your instruction.
+- The wordmark is still placeholder `<text>` rather than the real traced path.

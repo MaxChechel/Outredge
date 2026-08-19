@@ -1,0 +1,26 @@
+---
+/**
+ * One of the three fixed case study sections.
+ *
+ * The numbered aside sits beside the prose column on wide screens and above it
+ * on narrow. Numbering is generated, never typed into content.
+ */
+interface Props {
+  /** Slot identity. The page template asserts all three are present. */
+  id: 'brief' | 'solution' | 'result';
+  number: string;
+  title: string;
+}
+
+const { id, number, title } = Astro.props as Props;
+---
+
+<section id={id} class="grid gap-lg lg:grid-cols-[1fr_2fr] lg:gap-2xl" data-case-section={id}>
+  <div class="flex gap-2xs lg:flex-col lg:gap-3xs">
+    <p class="text-body-sm text-text-muted">{number}</p>
+    <h2 class="text-h5 text-trim">{title}</h2>
+  </div>
+  <div class="case-body flex flex-col gap-md">
+    <slot />
+  </div>
+</section>

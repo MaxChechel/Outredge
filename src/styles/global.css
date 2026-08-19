@@ -190,9 +190,12 @@
   --color-surface-hover: var(--color-neutral-100);
 
   /* Text */
+  /* Only two text colours clear WCAG AA on this background: neutral-950 at
+     19.1:1 and neutral-600 at 7.0:1. neutral-500 measures 4.48:1 — under the
+     4.5 threshold — so there is deliberately no third, fainter text token.
+     Anything lighter is a decorative line, not text. */
   --color-text: var(--color-neutral-950);
   --color-text-muted: var(--color-neutral-600);
-  --color-text-faint: color-mix(in srgb, var(--color-text) 50%, transparent);
 
   /* Lines */
   --color-border: var(--color-neutral-300);
@@ -261,7 +264,6 @@
 
   --color-text: var(--color-neutral-950);
   --color-text-muted: var(--color-neutral-600);
-  --color-text-faint: color-mix(in srgb, var(--color-text) 50%, transparent);
 
   --color-border: var(--color-neutral-300);
   --color-border-strong: var(--color-neutral-950);
@@ -677,6 +679,69 @@
 
   /* A select showing its placeholder reads as muted, like a real placeholder. */
   .select-wrap select:has(option[value='']:checked) {
-    color: var(--color-text-faint);
+    color: var(--color-text-muted);
+  }
+}
+
+/* ==========================================================================
+   8. CLIP
+
+   Pause/play affordance for looping video. Always visible — these clips run
+   well past five seconds, so WCAG 2.2.2 requires a control, and a
+   hover-to-reveal one does not exist for touch or keyboard users.
+   ========================================================================== */
+
+@layer components {
+  .clip-toggle {
+    position: absolute;
+    right: var(--spacing-2xs);
+    bottom: var(--spacing-2xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--spacing-lg);
+    height: var(--spacing-lg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    transition: background-color var(--duration-base) var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .clip-toggle:hover {
+      background-color: var(--color-surface-hover);
+    }
+  }
+
+  /* Play triangle by default; two bars once playing. Both drawn in CSS so the
+     control costs no icon asset and follows currentColor under any theme. */
+  .clip-icon {
+    display: block;
+    width: 0;
+    height: 0;
+    margin-left: 0.125rem;
+    border-top: 0.3125rem solid transparent;
+    border-bottom: 0.3125rem solid transparent;
+    border-left: 0.5rem solid currentcolor;
+  }
+
+  .clip.is-playing .clip-icon {
+    width: 0.5rem;
+    height: 0.625rem;
+    margin-left: 0;
+    border: 0;
+    background-image: linear-gradient(
+      to right,
+      currentcolor 0 0.1875rem,
+      transparent 0.1875rem 0.3125rem,
+      currentcolor 0.3125rem 0.5rem
+    );
+  }
+
+  /* Body media sits at the reading measure of the case study column. */
+  .clip,
+  .case-body > figure {
+    margin-block: var(--spacing-lg);
   }
 }

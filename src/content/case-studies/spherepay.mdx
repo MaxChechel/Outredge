@@ -1,0 +1,55 @@
+---
+title: "Spherepay"
+client: "Sphere"
+summary: "Design system foundation and full Webflow build for a global stablecoin payments platform. The variable architecture and component structure were established before any code, then the site was built on top of it."
+services:
+  - "Design System"
+  - "Webflow Development"
+  - "Web Animations (GSAP)"
+year: "2025"
+order: 4
+liveUrl: "https://spherepay.co/"
+logo: "sphere"
+cover: "spherepay-cover"
+thumbnail: "../../assets/work/spherepay.avif"
+tags: "Marketing site, Design system"
+description: "How Outredge turned Spherepay's design direction into a rigorous system and a production-grade Webflow site, localized and built to scale without a rebuild."
+testimonial: "spherepay"
+---
+import { CaseSection, Figure, Clip, Lede } from '../../components/mdx';
+
+<CaseSection id="brief" number="01" title="Brief">
+
+<Lede>Spherepay is building the infrastructure for global stablecoin payments: a developer toolkit and business dashboard that lets companies send, receive, convert, and settle across currencies and chains through a single API. The product is technically sophisticated, and the site had to communicate that credibly to two very different audiences at once, developers who judge by technical precision and business buyers who need the outcome made clear.</Lede>
+
+Spherepay already had a design team and a clear visual direction, so this was not a design-from-scratch engagement. The risk in that setup is the familiar one: a strong design that degrades on the way to production, or a system that looks right on the first page and falls apart as the site grows. The work was the structural and engineering layer: bring rigor to the foundation before development began, build the site in Webflow at the quality the brand demanded, and leave the in-house team a system they could carry forward unaided.
+
+</CaseSection>
+
+<CaseSection id="solution" number="02" title="Solution">
+
+**Design system as foundation, not decoration.** Before any code, the engagement started alongside the in-house design team to establish the web design system: theme tokens, primary and secondary button states, typography, spacing, and a full alpha scale, all mapped for both light and dark mode. The goal was a system that stays consistent as the site scales and reuses across every Spherepay web property, not a set of styles for one site.
+
+<Figure src="spherepay-1.webp" alt="Figma variables panel defining Spherepay's light and dark theme tokens" />
+
+**Translation without loss.** Every variable defined in design was mirrored one to one in Webflow on the Lumos framework. Design decisions reached production exactly as intended, with no drift between Figma and the live site. This is where most design to development handoffs quietly lose quality, and the structure was built specifically to prevent that.
+
+<Figure src="spherepay-2.webp" alt="Webflow variables panel mirroring the Spherepay design tokens one to one" />
+
+**Built for a global audience.** Spherepay sells across borders, so the site needed to speak to international visitors in their own language. Full localization was set up in Webflow: translated content per locale, localized URLs and hreflang for search, and a clean language switcher, all built on the same design system rather than as a separate site. Because localization was planned into the structure from the start, adding or updating a language stays a content task for the in-house team, not an engineering project.
+
+<Clip src="spherepay-api" aspect="16/9" label="Spherepay API page, with animated code panels" />
+
+**Motion with restraint.** Scroll-driven reveal animations were implemented across the homepage and every product page (API, Dashboard, Private Desk, Embedded Ramp) using GSAP and custom JavaScript. For a product sold on technical trust, motion had to add polish without reading as decorative or slowing the content down. Restraint over spectacle.
+
+<Clip src="spherepay-products" aspect="16/9" label="Spherepay products page" />
+
+</CaseSection>
+
+<CaseSection id="result" number="03" title="Result">
+
+A site that holds up technically and visually for a product operating at the infrastructure layer of global finance, credible to developers and business buyers alike. The design system is the part that keeps paying off: it survives handoff and now underpins Spherepay's web properties, so the team ships consistently rather than rebuilding. It also speaks to a global market in multiple languages, matching the reach of the product itself. The animation adds energy to the experience without costing any of the developer-first credibility the product depends on.
+
+<Clip src="spherepay-map" aspect="16/9" label="Spherepay homepage, with the animated global coverage map" />
+
+</CaseSection>

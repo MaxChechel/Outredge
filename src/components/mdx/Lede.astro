@@ -1,0 +1,9 @@
+---
+/** Opening paragraph of a case study section, set one step up from body copy. */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props as Props;
+---
+
+<p class:list={['text-body-lg text-text max-w-measure', className]}><slot /></p>

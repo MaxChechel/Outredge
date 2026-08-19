@@ -1,0 +1,34 @@
+---
+import { Image } from 'astro:assets';
+
+/** A body image. Intrinsic aspect, never cropped. */
+interface Props {
+  /** Filename under src/assets/case-studies/. */
+  src: string;
+  alt: string;
+  caption?: string;
+  class?: string;
+}
+
+const { src, alt, caption, class: className } = Astro.props as Props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '../../assets/case-studies/*.{avif,webp,png,jpg}',
+  { eager: true },
+);
+const entry = images[`../../assets/case-studies/${src}`];
+if (!entry) throw new Error(`Figure: no image at src/assets/case-studies/${src}`);
+---
+
+<figure class:list={['flex flex-col gap-2xs', className]}>
+  <Image
+    src={entry.default}
+    alt={alt}
+    widths={[640, 1024, 1440]}
+    sizes="(min-width: 62rem) 60vw, 92vw"
+    loading="lazy"
+    decoding="async"
+    class="w-full rounded-sm border border-border"
+  />
+  {caption && <figcaption class="text-body-sm text-text-muted">{caption}</figcaption>}
+</figure>

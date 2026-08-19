@@ -1,0 +1,147 @@
+---
+import { getCollection, render } from 'astro:content';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import Button from '../../components/Button.astro';
+import ClientLogo from '../../components/ClientLogo.astro';
+import type { ClientSlug } from '../../components/ClientLogo.astro';
+import QuoteCard from '../../components/QuoteCard.astro';
+import CtaBanner from '../../components/CtaBanner.astro';
+import Clip from '../../components/mdx/Clip.astro';
+import { testimonials } from '../../data/testimonials';
+import { ogImageUrl } from '../../lib/og';
+
+// No `: GetStaticPaths` annotation: it widens the return type and Astro then
+// cannot infer Astro.props from the `props` returned below.
+export const getStaticPaths = async () => {
+  // Declared inside: Astro hoists getStaticPaths into its own module scope, so
+  // it cannot see consts defined in the component frontmatter.
+  /** Every case study must carry all three sections. Missing one fails the build. */
+  const REQUIRED_SLOTS = ['brief', 'solution', 'result'] as const;
+
+  const entries = await getCollection('caseStudies');
+
+  for (const entry of entries) {
+    const missing = REQUIRED_SLOTS.filter((slot) => !entry.body?.includes(`id="${slot}"`));
+    if (missing.length) {
+      throw new Error(
+        `Case study "${entry.id}" is missing required section(s): ${missing.join(', ')}. ` +
+          'Each body needs <CaseSection id="…"> for brief, solution and result.',
+      );
+    }
+  }
+
+  const sorted = entries.sort((a, b) => a.data.order - b.data.order);
+  return sorted.map((entry, index) => ({
+    params: { slug: entry.id },
+    props: { entry, next: sorted[(index + 1) % sorted.length] },
+  }));
+};
+
+/** `next` wraps around, so the last case study points back at the first. */
+const { entry, next } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+const ogImage = await ogImageUrl(data.thumbnail);
+
+const quote = data.testimonial
+  ? testimonials.find((t) => t.workSlug === data.testimonial)
+  : undefined;
+---
+
+<BaseLayout title={`${data.title} | Outredge`} description={data.description} ogImage={ogImage}>
+  <!-- Hero -->
+  <Section spaceTop="top" spaceBottom="md" border>
+    <div class="grid gap-2xl p-md lg:grid-cols-[3fr_2fr] lg:items-start">
+      <div class="flex flex-col gap-md">
+        <ClientLogo
+          slug={data.logo as ClientSlug}
+          title={`${data.client} logo`}
+          class="h-logo max-w-logo text-text-muted"
+        />
+        <h1 class="text-h1 text-trim">{data.title}</h1>
+        <p class="text-body-lg text-text-muted max-w-measure">{data.summary}</p>
+      </div>
+
+      <div class="flex flex-col gap-md border-t border-border pt-md">
+        <dl class="grid grid-cols-2 gap-md lg:grid-cols-1">
+          <div class="flex flex-col gap-3xs">
+            <dt class="text-body-sm text-text-muted">Services</dt>
+            <dd class="text-body-sm">
+              <ul class="list-bare flex flex-col gap-3xs">
+                {data.services.map((service) => <li>{service}</li>)}
+              </ul>
+            </dd>
+          </div>
+          <div class="flex flex-col gap-3xs">
+            <dt class="text-body-sm text-text-muted">Client</dt>
+          <dd class="text-body-sm">
+            {data.client}
+            {
+              data.via && (
+                <>
+                  {' '}&middot; via{' '}
+                  <a href={data.viaUrl} rel="noopener noreferrer" target="_blank">{data.via}</a>
+                </>
+              )
+            }
+          </dd>
+        </div>
+        <div class="flex flex-col gap-3xs">
+            <dt class="text-body-sm text-text-muted">Year</dt>
+            <dd class="text-body-sm">{data.year}</dd>
+          </div>
+        </dl>
+
+        <!-- Outside the <dl>: a definition list may only contain dt/dd groups. -->
+        <div>
+          <Button href={data.liveUrl} variant="secondary" external>Live website</Button>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Cover clip -->
+  <Section space="none" border>
+    <div class="p-md">
+      <Clip src={data.cover} aspect="3/2" label={`${data.title} site walkthrough`} />
+    </div>
+  </Section>
+
+  <!-- Body: the three fixed sections -->
+  <Section space="lg" border>
+    <div class="flex flex-col gap-2xl p-md">
+      <Content />
+    </div>
+  </Section>
+
+  {
+    quote && (
+      <Section space="lg" width="narrow" border>
+        <div class="p-md">
+          <QuoteCard testimonial={quote} featured />
+        </div>
+      </Section>
+    )
+  }
+
+  <!-- Next case study -->
+  <Section space="lg" border>
+    <a
+      href={`/case-studies/${next.id}`}
+      class="flex flex-col gap-2xs p-md transition-colors duration-base ease-out hover:text-text-muted"
+    >
+      <span class="text-eyebrow">Next case study</span>
+      <span class="text-h3 text-trim">{next.data.title}</span>
+    </a>
+  </Section>
+
+  <CtaBanner />
+
+  <!-- The site's only JavaScript. One module owning every clip on the page. -->
+  <script>
+    import '../../scripts/clips';
+  </script>
+</BaseLayout>

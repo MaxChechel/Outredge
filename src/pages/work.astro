@@ -3,7 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import WorkCard from '../components/WorkCard.astro';
 import CtaBanner from '../components/CtaBanner.astro';
-import { work } from '../data/work';
+import { getWork } from '../lib/work';
+
+const work = await getWork();
 ---
 
 <BaseLayout

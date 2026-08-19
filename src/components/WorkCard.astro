@@ -1,5 +1,6 @@
 ---
-import type { WorkItem } from '../data/work';
+import { Image } from 'astro:assets';
+import type { WorkCardItem } from '../lib/work';
 
 /**
  * Work card — thumbnail, title, services.
@@ -7,47 +8,41 @@ import type { WorkItem } from '../data/work';
  * The whole card is one link. The export used an absolutely-positioned overlay
  * anchor that duplicated the label two or three times in the DOM, which is how
  * every card ended up announcing itself as "Website name goes here".
- *
- * Phase 3 layers a poster video over the still for featured items.
  */
 interface Props {
-  item: WorkItem;
-  /** First row on a page gets eager loading; everything below the fold is lazy. */
+  item: WorkCardItem;
+  /** Above-the-fold cards load eagerly; everything else is lazy. */
   priority?: boolean;
   /**
-   * Heading level for the card title, so the document outline stays contiguous.
-   * On /work the cards sit directly under the h1 and are level 2; in the
-   * homepage reel they sit under a section heading and are level 3.
-   * Branched rather than rendered via a dynamic tag — see SectionHeader.
+   * Heading level, so the document outline stays contiguous. On /work the cards
+   * sit under the h1 and are level 2; in the homepage reel they sit under a
+   * section heading and are level 3. Branched rather than rendered via a
+   * dynamic tag — see SectionHeader.
    */
   level?: 2 | 3;
   class?: string;
 }
 
 const { item, priority = false, level = 3, class: className } = Astro.props as Props;
-
-const href = item.caseStudy ? `/case-studies/${item.slug}` : item.liveUrl;
-const isExternal = !item.caseStudy;
 ---
 
 <li class:list={['group', className]}>
   <a
-    href={href}
-    rel={isExternal ? 'noopener noreferrer' : undefined}
-    target={isExternal ? '_blank' : undefined}
+    href={item.href}
+    rel={item.external ? 'noopener noreferrer' : undefined}
+    target={item.external ? '_blank' : undefined}
     class="flex flex-col gap-xs rounded-sm"
   >
     <div class="overflow-hidden rounded-sm border border-border bg-bg-subtle">
-      <img
+      <Image
         src={item.thumbnail}
-        width={item.width}
-        height={item.height}
         alt={`${item.title} — ${item.tags.toLowerCase()}`}
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 62rem) 40vw, 92vw"
         loading={priority ? 'eager' : 'lazy'}
         decoding={priority ? 'sync' : 'async'}
-        fetchpriority={priority ? 'high' : undefined}
-        sizes="(min-width: 62rem) 40vw, 92vw"
         class="work-thumb aspect-3/2 w-full object-cover"
+        style={item.slug === 'xbow' ? 'object-position: 50% 20%;' : undefined}
       />
     </div>
 

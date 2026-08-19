@@ -1,0 +1,58 @@
+---
+title: "AlphaPoint"
+client: "AlphaPoint"
+summary: "Full Webflow rebuild of AlphaPoint's marketing site, migrated from WordPress. Built with a Lumos-based design system, HubSpot integration, and performance-tuned motion throughout."
+services:
+  - "Webflow Development"
+  - "WordPress migration"
+  - "Web Animations (GSAP)"
+year: "2026"
+order: 2
+liveUrl: "https://alphapoint.com/"
+via: "Pony Studio"
+viaUrl: "https://pony.studio/"
+logo: "alphapoint"
+cover: "alphapoint-cover"
+thumbnail: "../../assets/work/alphapoint.avif"
+tags: "Marketing site, WordPress migration"
+description: "Full Webflow rebuild of AlphaPoint's marketing site, migrated from WordPress. Built with a Lumos-based design system, HubSpot integration, and performance-tuned motion throughout."
+---
+import { CaseSection, Figure, Clip, Lede } from '../../components/mdx';
+
+<CaseSection id="brief" number="01" title="Brief">
+
+<Lede>AlphaPoint provides the financial infrastructure that banks, exchanges, and fintechs use to operate stablecoins and digital assets. They needed to move their marketing site off WordPress to support a more ambitious design language, tighter integrations with their marketing stack, and the kind of motion that wasn't realistic on the old platform. [Pony Studio](https://pony.studio/) handled the design. We handled the build end to end.</Lede>
+
+</CaseSection>
+
+<CaseSection id="solution" number="02" title="Solution">
+
+Built the design system in Webflow using the Lumos framework, matched to what Pony Studio handed off in Figma. Variables are set up across theme modes to ensure consistency across website and scalability.
+
+<Figure src="alphapoint-webflow-variables.avif" alt="Webflow variables panel showing AlphaPoint's theme tokens mapped across base, dark, and brand modes" />
+
+We migrated the full CMS from WordPress to Webflow. Articles, resources, gated downloads, team content. Every legacy URL was mapped and redirected so the site kept its search rankings through the switch.
+
+<Clip src="alphapoint-liquidity" aspect="16/9" label="AlphaPoint institutional liquidity page, with an animated routing diagram" />
+
+The site uses HubSpot for forms, but the default styling doesn't match the design. We embedded HubSpot forms in Webflow and restyled them fully across all states, error messages, and success behavior. Tracking and workflows still work as expected, and some CMS content is gated behind these forms.
+
+<Clip src="alphapoint-form" aspect="16/9" label="AlphaPoint book-a-demo form" />
+
+The site uses a lot of Lottie animations and video, which can hurt performance if you're not careful. We moved video off Webflow to external hosting and built a system that delays loading and only plays assets when they're actually in view.
+
+<Clip src="alphapoint-use-case" aspect="16/9" label="AlphaPoint regulated-banking use case, with a rotating radial diagram" />
+
+Layout reveal animations run throughout the site, built with GSAP. Timing and feel match the new brand.
+
+<Clip src="alphapoint-careers" aspect="16/9" label="AlphaPoint careers page, with an animated capability chart" />
+
+</CaseSection>
+
+<CaseSection id="result" number="03" title="Result">
+
+Site shipped on schedule with migration intact, integrations live, and performance holding across the motion-heavy build. AlphaPoint moved onto a platform that supports the new design language end to end, with a design system the marketing team can extend without breaking the rhythm.
+
+<Clip src="alphapoint-product" aspect="16/9" label="AlphaPoint product page, with an animated step chart" />
+
+</CaseSection>

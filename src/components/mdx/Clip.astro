@@ -1,0 +1,56 @@
+---
+import { getImage } from 'astro:assets';
+import { videoUrl } from '../../lib/media';
+
+/**
+ * A looping product clip.
+ *
+ * Ships a poster and no source: `clips.ts` attaches the MP4 only when the clip
+ * nears the viewport. Never bare autoplay.
+ */
+interface Props {
+  /** Base name under VIDEO_BASE, e.g. "spherepay-map". */
+  src: string;
+  /** Crop ratio. The export only ever used these two. */
+  aspect?: '16/9' | '3/2';
+  /** Accessible name. Required — a clip with no label is not shippable. */
+  label: string;
+  class?: string;
+}
+
+const { src, aspect = '16/9', label, class: className } = Astro.props as Props;
+
+if (!label) throw new Error(`Clip "${src}" is missing its required \`label\`.`);
+
+const posters = import.meta.glob<{ default: ImageMetadata }>(
+  '../../assets/posters/*.jpg',
+  { eager: true },
+);
+const entry = posters[`../../assets/posters/${src}.jpg`];
+if (!entry) throw new Error(`Clip "${src}": no poster at src/assets/posters/${src}.jpg`);
+
+const poster = await getImage({ src: entry.default, format: 'webp', width: 1280 });
+---
+
+<figure class:list={['clip', className]} data-clip>
+  <div
+    class="relative overflow-hidden rounded-sm border border-border bg-bg-subtle"
+    style={`aspect-ratio: ${aspect};`}
+  >
+    <video
+      data-src={videoUrl(src)}
+      poster={poster.src}
+      width={poster.attributes.width ?? 1280}
+      height={poster.attributes.height ?? 720}
+      loop
+      muted
+      playsinline
+      preload="none"
+      aria-label={label}
+      class="h-full w-full object-cover"></video>
+
+    <button type="button" data-clip-toggle aria-label="Play video" aria-pressed="true" class="clip-toggle">
+      <span class="clip-icon" aria-hidden="true"></span>
+    </button>
+  </div>
+</figure>
