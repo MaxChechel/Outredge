@@ -576,7 +576,7 @@ places it deliberately does not, each because the original was broken. This is t
 | 8 | **XBOW's live link corrected** from `vibecon.ai` to `xbow.com`. | Wrong destination in the export. | `work.ts` |
 | 9 | **Definition list made valid.** | The case study "Live website" button sat inside a `<dl>`, which may contain only `dt`/`dd` groups. | `[slug].astro` |
 | 10 | **Dev-server script dropped.** | `index.html` and `work.html` loaded `http://127.0.0.1:5502/script.js`, blocked as mixed content on HTTPS. | — |
-| 11 | **XBOW case study withheld.** | The export's XBOW body is Replit's Vibecon copy **verbatim** — every paragraph of brief, solution and result is byte-identical. Shipping it would put a description of Replit's conference page on XBOW's page. Staged in `drafts/` pending real copy; XBOW still appears in the work grid, linking to xbow.com. | `drafts/case-studies/xbow.mdx` |
+| 11 | **XBOW removed entirely.** | The export's XBOW body is Replit's Vibecon copy **verbatim** — every paragraph of brief, solution and result is byte-identical. Per ruling, XBOW is out of scope: no case study, no work-grid entry, no hero logo, no name in body copy or meta descriptions. The draft and its assets are dormant in `drafts/`; `/case-studies/xbow` 301s to `/work` because the old URL is indexed. | `drafts/`, `_redirects` |
 
 Type-scale quirks were **not** corrected — see §8.3. The `h6`/`large` inversion is
 transcribed faithfully as a known quirk, per ruling.

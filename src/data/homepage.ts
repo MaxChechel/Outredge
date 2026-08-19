@@ -3,7 +3,6 @@ import { site } from './site';
 /** Logos in the hero "Trusted by teams at:" strip. */
 export const trustedBy = [
   { name: 'Replit', slug: 'replit' },
-  { name: 'XBOW', slug: 'xbow' },
   { name: 'Lindy', slug: 'lindy' },
   { name: 'Sphere', slug: 'sphere' },
   { name: 'Alphapoint', slug: 'alphapoint' },
@@ -14,7 +13,7 @@ export const trustedBy = [
 export const features = [
   {
     title: 'Senior expertise',
-    body: "Built sites for Replit, Lindy, XBOW, Sphere, and others. The person building your site is the person who's already shipped at the level you need.",
+    body: "Built sites for Replit, Lindy, Sphere, and others. The person building your site is the person who's already shipped at the level you need.",
   },
   {
     title: 'Design engineered, not just built',

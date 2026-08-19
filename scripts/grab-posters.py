@@ -34,7 +34,7 @@ OFFSETS: dict[str, float] = {
 }
 
 sys.path.insert(0, str(ROOT / 'scripts'))
-from stage_videos import RENAME  # noqa: E402  (shared source of truth)
+from stage_videos import DORMANT, RENAME  # noqa: E402  (shared source of truth)
 
 
 def ffmpeg_exe() -> str:
@@ -58,6 +58,8 @@ def main() -> int:
     exe = ffmpeg_exe()
     OUT.mkdir(parents=True, exist_ok=True)
     for old, new in sorted(RENAME.items(), key=lambda kv: kv[1]):
+        if old in DORMANT:
+            continue
         src = SRC / f'{old}_mp4.mp4'
         if not src.exists():
             print(f'missing source: {src}', file=sys.stderr)

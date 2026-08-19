@@ -692,3 +692,72 @@ Not migrated. No redirect added: `/401` was never a page anyone linked to or lan
 
 - Phase 4 is not marked complete — yours to close.
 - No DNS, no dashboard actions, no accounts created, per your instruction.
+
+---
+
+## 2026-08-19 — Ruling change: XBOW out of scope
+
+XBOW is removed from the shipped site entirely. The draft and its claim-by-claim table are kept
+dormant, and the `/case-studies/xbow` → `/work` 301 stays because the old URL is indexed.
+
+**Sweep result: not clean — eight things referenced XBOW, beyond the four you named.** All removed.
+Listed in full so nothing is silently gone.
+
+### Structural
+
+| # | Where | What was removed |
+|---|---|---|
+| 1 | `src/data/work.ts` | The `externalWork` entry (title, tags, `liveUrl: https://xbow.com`, thumbnail, `order: 5`) and its `import`. Work grid is now 12 cards. |
+| 2 | `src/data/homepage.ts` | `{ name: 'XBOW', slug: 'xbow' }` from `trustedBy`. **The hero logo strip is now five logos, not six.** |
+| 3 | `src/components/ClientLogo.astro` | `'xbow'` from the `ClientSlug` union, so referencing it is now a type error. |
+| 4 | `src/components/WorkCard.astro` | The `object-position: 50% 20%` special case. It existed only because XBOW's thumbnail was not 3:2 — with XBOW gone the branch had no other caller, so **the open question about a 3:2 replacement is dropped** as instructed. |
+
+### Copy — four prose mentions, which the ruling's "no XBOW presence at all" reaches
+
+These are marketing copy, so the exact before/after is recorded for a one-line revert:
+
+| # | Where | Before → After |
+|---|---|---|
+| 5 | `homepage.ts`, "Senior expertise" card | "Built sites for Replit, Lindy, **XBOW,** Sphere, and others." → "Built sites for Replit, Lindy, Sphere, and others." |
+| 6 | `index.astro`, About section | "…built marketing sites for Replit, Lindy, **XBOW,** Sphere, and others…" → "…for Replit, Lindy, Sphere, and others…" |
+| 7 | `index.astro`, meta description | "Trusted by Replit, Lindy, **XBOW,** Sphere." → "Trusted by Replit, Lindy, Sphere." |
+| 8 | `work.astro`, meta description | same change |
+
+Minimal edits — the name is dropped, nothing is substituted, no new claim introduced. **If you meant
+"no XBOW work shown" rather than "no XBOW named anywhere", 5–8 revert in four one-word edits.**
+
+### Assets
+
+Moved out of `src/` into `drafts/assets/`, so they are out of the build and the module graph but the
+dormant draft stays restorable:
+
+    clients/xbow.svg · work/xbow.avif · posters/xbow-{cover,2,3}.jpg · case-studies/xbow-{1,2}.avif
+
+The three XBOW clips are listed in `DORMANT` in `scripts/stage_videos.py`, so staging and poster
+generation skip them instead of resurrecting them. `stage_videos.py` now reports
+"29 clips staged; 3 dormant, skipped". Staged `public/videos/xbow-*.mp4` deleted.
+
+### Kept, per ruling
+
+- `drafts/case-studies/xbow.mdx` — untouched.
+- The claim-by-claim table in the Phase 4 entry above — untouched.
+- `/case-studies/xbow  /work  301` in `public/_redirects`. **Verified 301 → `/work`.**
+- `AUDIT.md` §9 deviation 11, updated to reflect out-of-scope rather than drafted.
+
+### Verified after removal
+
+- **Zero occurrences of "xbow" in any built HTML, XML or text file**, and no XBOW asset in `dist/`.
+  The only reference in the output is the redirect rule itself, which is intended.
+- Sitemap: 10 URLs, no XBOW. Work grid: 12 cards, no XBOW.
+- axe-core (wcag2a/aa, 21a/aa, 22aa, best-practice), 11 pages × 2 viewports: **0 violations**.
+- 11 pages × 7 widths: no horizontal overflow; one `h1` each; no heading skips; all images with alt.
+- Executable JS unchanged: one module, case studies only.
+- Lighthouse mobile, behind Pages with `_headers`: **100/100/100/100** on `/` and
+  `/case-studies/alphapoint`.
+- `astro check`: 0 errors, 0 warnings, 0 hints.
+
+`drafts/README.md` now carries a seven-step restore procedure, including the two things easy to miss:
+re-adding `'xbow'` to the `ClientSlug` union, and removing the redirect.
+
+**Still carried forward for Phase 5-lite:** `VIDEO_BASE` hostname, the wordmark's real traced path,
+the contact delivery hop, and the `/approach` + `/how-we-work` redirect ruling.

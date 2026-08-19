@@ -53,11 +53,19 @@ RENAME = {
     'XBOW-3': 'xbow-3',
 }
 
+# Clips belonging to withheld case studies. Kept in the map so the export stays
+# fully documented, but skipped so re-running does not resurrect assets that
+# were deliberately taken out of the pipeline. See drafts/README.md.
+DORMANT = {'XBOW-1', 'XBOW-2', 'XBOW-3'}
+
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     total = 0
+    staged = 0
     for old, new in RENAME.items():
+        if old in DORMANT:
+            continue
         src = SRC / f'{old}_mp4.mp4'
         if not src.exists():
             print(f'missing source: {src}', file=sys.stderr)
@@ -65,7 +73,11 @@ def main() -> int:
         dst = OUT / f'{new}.mp4'
         shutil.copy2(src, dst)
         total += dst.stat().st_size
-    print(f'{len(RENAME)} clips staged in {OUT.relative_to(ROOT)} ({total / 1024 / 1024:.1f} MB)')
+        staged += 1
+    print(
+        f'{staged} clips staged in {OUT.relative_to(ROOT)} ({total / 1024 / 1024:.1f} MB); '
+        f'{len(DORMANT)} dormant, skipped'
+    )
     return 0
 
 

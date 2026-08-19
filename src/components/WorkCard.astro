@@ -42,7 +42,6 @@ const { item, priority = false, level = 3, class: className } = Astro.props as P
         loading={priority ? 'eager' : 'lazy'}
         decoding={priority ? 'sync' : 'async'}
         class="work-thumb aspect-3/2 w-full object-cover"
-        style={item.slug === 'xbow' ? 'object-position: 50% 20%;' : undefined}
       />
     </div>
 
