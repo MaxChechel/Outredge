@@ -1,0 +1,97 @@
+---
+import Logo from './Logo.astro';
+import Button from './Button.astro';
+
+/**
+ * Site navigation.
+ *
+ * One DOM tree, not two. The export shipped complete parallel desktop and
+ * mobile navs and swapped them at 991px, which doubled the markup and the
+ * number of places a link could go stale.
+ *
+ * The mobile menu is a native <details>/<summary> disclosure: keyboard
+ * operable, correctly announced, and zero JavaScript.
+ */
+const { pathname } = Astro.url;
+
+const links = [
+  { href: '/work', label: 'Work' },
+  { href: '/#approach', label: 'Approach' },
+  { href: '/#pricing', label: 'How it works' },
+] as const;
+
+/** Marks the current page for both styling and assistive tech. */
+const isCurrent = (href: string) =>
+  href.startsWith('/#') ? false : pathname === href || pathname === `${href}/`;
+---
+
+<a href="#main" class="skip-link text-body-sm">Skip to main content</a>
+
+<header class="sticky top-0 z-40 bg-bg">
+  <div class="container-gutter max-w-main border-x border-b border-border">
+    <nav aria-label="Main" class="flex h-nav items-center justify-between gap-md">
+      <a
+        href="/"
+        class="inline-flex items-center rounded-sm"
+        aria-label="Outredge — home"
+        aria-current={pathname === '/' ? 'page' : undefined}
+      >
+        <Logo />
+      </a>
+
+      <!-- Desktop links. Hidden below lg, where the disclosure takes over. -->
+      <ul class="list-bare hidden items-center gap-lg lg:flex">
+        {
+          links.map(({ href, label }) => (
+            <li>
+              <a
+                href={href}
+                class="text-body-sm text-text-muted transition-colors duration-base ease-out hover:text-text aria-[current=page]:text-text"
+                aria-current={isCurrent(href) ? 'page' : undefined}
+              >
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="hidden lg:block">
+        <Button href="/contact" variant="primary">Contact</Button>
+      </div>
+
+      <!-- Mobile disclosure. -->
+      <details class="nav-disclosure lg:hidden">
+        <summary
+          class="flex h-button-md w-button-md cursor-pointer list-none items-center justify-center rounded-sm border border-border"
+        >
+          <span class="sr-only">Menu</span>
+          <span class="nav-burger" aria-hidden="true"></span>
+        </summary>
+
+        <div
+          class="absolute inset-x-0 top-full border-y border-border bg-bg px-md pt-md pb-lg"
+        >
+          <ul class="list-bare flex flex-col gap-md">
+            {
+              links.map(({ href, label }) => (
+                <li>
+                  <a
+                    href={href}
+                    class="text-h5 aria-[current=page]:text-text"
+                    aria-current={isCurrent(href) ? 'page' : undefined}
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))
+            }
+            <li class="pt-3xs">
+              <Button href="/contact" variant="primary" class="w-full">Contact</Button>
+            </li>
+          </ul>
+        </div>
+      </details>
+    </nav>
+  </div>
+</header>

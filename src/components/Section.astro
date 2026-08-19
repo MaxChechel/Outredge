@@ -1,0 +1,101 @@
+---
+/**
+ * Section shell — owns vertical rhythm, container width, and theme.
+ *
+ * Pages compose sections; they never make spacing decisions. Everything that
+ * would otherwise be a copied wrapper-div-plus-class-string lives here.
+ *
+ * The Webflow export built rhythm out of empty <div class="u-section-spacer">
+ * elements — 14 on the homepage alone. This replaces all of them with padding.
+ */
+export type SectionSpace = 'none' | 'sm' | 'md' | 'lg';
+/** Widen this union as themes are added to global.css. */
+export type SectionTheme = 'light';
+
+interface Props {
+  /** Element to render. Use `header`/`footer` for landmarks. */
+  as?: 'section' | 'div' | 'header' | 'footer' | 'article' | 'aside';
+  /** Remaps the semantic colour tokens for this section and its descendants. */
+  theme?: SectionTheme;
+  /** Vertical padding, top and bottom. */
+  space?: SectionSpace;
+  /** Override just the top. `top` clears the fixed nav on first-in-page sections. */
+  spaceTop?: SectionSpace | 'top';
+  /** Override just the bottom. */
+  spaceBottom?: SectionSpace;
+  /** Inner max-width. `full` opts out of the container entirely. */
+  width?: 'main' | 'narrow' | 'measure' | 'full';
+  /** The 1px vertical hairlines framing the container — a signature of the design. */
+  border?: boolean;
+  id?: string;
+  class?: string;
+  /** Applied to the inner container, for grid/flex composition by the caller. */
+  innerClass?: string;
+  /** Any other attribute is forwarded to the rendered element. */
+  [key: string]: unknown;
+}
+
+const {
+  as: Tag = 'section',
+  theme,
+  space = 'md',
+  spaceTop,
+  spaceBottom,
+  width = 'main',
+  border = false,
+  id,
+  class: className,
+  innerClass,
+  ...rest
+} = Astro.props as Props;
+
+const PAD_TOP = {
+  none: 'pt-section-none',
+  sm: 'pt-section-sm',
+  md: 'pt-section-md',
+  lg: 'pt-section-lg',
+  top: 'pt-section-top',
+} as const;
+
+const PAD_BOTTOM = {
+  none: 'pb-section-none',
+  sm: 'pb-section-sm',
+  md: 'pb-section-md',
+  lg: 'pb-section-lg',
+} as const;
+
+const WIDTH = {
+  main: 'max-w-main',
+  narrow: 'max-w-narrow',
+  measure: 'max-w-measure',
+  full: '',
+} as const;
+
+const paddingTop = PAD_TOP[spaceTop ?? space];
+const paddingBottom = PAD_BOTTOM[spaceBottom ?? space];
+const isFullBleed = width === 'full';
+---
+
+<Tag
+  id={id}
+  data-theme={theme}
+  class:list={['relative', paddingTop, paddingBottom, className]}
+  {...rest}
+>
+  {
+    isFullBleed ? (
+      <slot />
+    ) : (
+      <div
+        class:list={[
+          'container-gutter relative',
+          WIDTH[width],
+          border && 'border-x border-border',
+          innerClass,
+        ]}
+      >
+        <slot />
+      </div>
+    )
+  }
+</Tag>

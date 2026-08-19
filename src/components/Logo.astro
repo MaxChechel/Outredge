@@ -1,0 +1,27 @@
+---
+/**
+ * Outredge wordmark. Inline SVG so it inherits currentColor and costs no request.
+ *
+ * Placeholder geometry — Phase 2 replaces the <text> with the real traced path
+ * from the export, at which point the font dependency disappears.
+ */
+interface Props {
+  class?: string;
+  /** Rendered as the accessible name. Omit inside a link that already names itself. */
+  title?: string;
+}
+
+const { class: className, title } = Astro.props;
+---
+
+<svg
+  class:list={['logo h-sm w-auto', className]}
+  viewBox="0 0 120 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  role={title ? 'img' : 'presentation'}
+  aria-hidden={title ? undefined : 'true'}
+>
+  {title && <title>{title}</title>}
+  <text x="0" y="18">Outredge</text>
+</svg>

@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
+.pnpm-state/
 .pnpm-store/
+
+# Local build-time tooling (fonttools, for scripts/subset-fonts.py)
+.venv/
 
 # Astro build output
 dist/

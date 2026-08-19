@@ -460,30 +460,87 @@ site**. Target for the rebuild is the reveal system plus a lazy-video observer �
 
 ## 7. Open questions
 
-1. **`approach.html` and `how-we-work.html`** are orphaned but indexed, and their content now lives in
-   homepage sections. Redirect `/approach` → `/#approach` and `/how-we-work` → `/#pricing`, or rebuild
-   them as real pages? (Redirecting is my recommendation — the homepage sections read better.)
-2. **`case-studies/xbow.html` is unreachable.** Add XBOW to the work grid, or was it deliberately
-   pulled? Its "Live website" link is also wrong (points at vibecon.ai) — what's the correct URL?
-3. **There is no accent color.** The site is monochrome; `--swatch--brand-blue-secondary` (`#98a7f5`)
-   is defined but never used. Do you want a real accent introduced in the rebuild, or is the
-   monochrome palette deliberate? This changes what the token system's accent layer means.
+1. **OPEN — `approach.html` and `how-we-work.html`** are orphaned but indexed, and their content now
+   lives in homepage sections. Redirect `/approach` → `/#approach` and `/how-we-work` → `/#pricing`,
+   or rebuild them as real pages? (Redirecting is my recommendation.)
+
+   > **Flagged per the Phase 0 review.** The review addressed XBOW and referred to "the second
+   > orphan", but there are in fact **two** orphan pages still unresolved — `approach.html` *and*
+   > `how-we-work.html` — separate from the orphaned XBOW *case study* in Q2. Both still carry
+   > canonical tags and meta descriptions, so both need a redirect decision in Phase 4.
+   > `how-we-work.html` is also the sole reason Swiper is loaded anywhere on the site.
+
+2. **ANSWERED (Phase 0 review).** XBOW belongs in the work grid and becomes reachable; its
+   live-site link is corrected away from `vibecon.ai`. Correct destination still needed — carried
+   forward to Phase 2, when the work grid is built.
+3. **ANSWERED (Phase 0 review).** The rebuild stays monochrome. `--color-accent` exists as a
+   semantic token pointed at a neutral primitive, so a future accent is a one-line change in
+   `global.css`. `#98a7f5` is not ported.
 4. **The `h6` step (1→1.13rem) is smaller than `text-large` (1.125→1.25rem) above ~700px**, so the
    scale inverts mid-viewport. Intentional, or should I regularize the ramp?
-5. **Lenis smooth scroll** — 100/100 Lighthouse and a hijacked scroll wheel are in tension, and Lenis
-   plus its GSAP ticker wiring is the last real reason to ship an animation library. Keep it, drop it,
-   or gate it behind `prefers-reduced-motion` and pointer type?
-6. **The contact form needs a backend.** Static Astro can't accept a POST, and the current form is a
-   Webflow endpoint with reCAPTCHA. Options: a form service (Formspree/Basin), a Cloudflare
-   Worker/Pages Function, or drop the form and lead with Cal.com + email. Which?
-7. **Should dark theme survive?** Both non-light themes are unused and fail contrast (see §3.2). I
-   propose shipping light-only tokens with the theme *mechanism* in place, and designing dark properly
-   later. Confirm.
-8. **WebM** is 2.5× the size of the MP4 for the same clips (96 MB vs 39 MB). Drop WebM and ship MP4
-   only, or re-encode both from the 337 MB originals with better settings in Phase 3?
+5. **ANSWERED (Phase 0 review).** Lenis is dropped. Native scrolling only, no scroll runtime. The
+   scroll-reveal system is supplied separately; `data-reveal` hooks and a `prefers-reduced-motion`
+   guard are in place from Phase 1.
+6. **DEFERRED to Phase 3 (Phase 0 review).** The form markup is scaffolded semantically in Phase 2
+   with no action wired. Backend choice — form service, Cloudflare Worker/Pages Function, or drop
+   the form for Cal.com + email — is made in Phase 3.
+7. **ANSWERED (Phase 0 review).** Dark and brand values are not transcribed. The theme mechanism is
+   built in full — Section takes `data-theme`, semantic tokens remap under `[data-theme]` — but only
+   `light` is populated. Adding a theme later touches `global.css` and the `SectionTheme` union only.
+8. **PARTLY ANSWERED (Phase 0 review).** Phase 3 migrates all 31 videos off `s3.amazonaws.com` to
+   your own CDN, with a poster frame for every video, `preload="none"`, and IntersectionObserver-
+   triggered playback — no bare `autoplay` anywhere. Still open: whether to ship WebM at all given
+   it is 2.5× the MP4 here (96 MB vs 39 MB), or re-encode both from the originals.
 9. **`401.html`** — a Webflow password-gate page with no static equivalent. Drop it, or do you need a
    protected route?
 10. **Case study body structure** — fixed three-slot MDX (`brief`/`solution`/`result`), or a freeform
     body with section components? See §5. I lean fixed, since all 8 are identical.
 11. **Client logo files** are named `logo-1.svg` … `logo-5.svg`. I plan to rename them to client slugs
     on migration. Any reason to preserve the existing filenames?
+
+
+---
+
+## 8. Addenda from Phase 1
+
+Found while transcribing the tokens; recorded here so the audit stays the reference document.
+
+### 8.1 Three more dead tokens in the type scale
+
+§3.3 listed eleven type steps as "every step below is in use". That was measured against the CSS,
+not the markup. Counting actual `u-text-style-*` usage across the shipping pages:
+
+| Step | Export name | Usages |
+|---|---|---|
+| `--text-7xl` | `display` | **0** |
+| `--text-4xl` | `h3` | **0** |
+| `--text-lg` | `large` | **0** |
+| `--text-6xl` | `h1` | 11 |
+| `--text-5xl` | `h2` | 9 |
+| `--text-3xl` | `h4` | 11 |
+| `--text-2xl` | `h5` | 30 |
+| `--text-xl` | `h6` | 16 |
+| `--text-base` | `main` | 17 |
+| `--text-sm` | `small` | 61 |
+
+**`display` was dropped.** It is unused, it sits outside the h1–h6 ramp rather than extending it,
+and at its 4rem floor a single long word can exceed the available measure on a 390px viewport.
+
+**`h3` and `large` were kept.** They are unused today, but both are interior steps of a ramp — a
+heading scale that jumps h2 → h4 is worse than an unused step, and Phase 2 will likely need both.
+Flag if you disagree; removing them later is a two-line change.
+
+### 8.2 `--text-sm` was flattened
+
+The export emitted `clamp(0.875rem, …, 0.88rem)` — a 0.08px range. Written as a flat `0.875rem`.
+
+### 8.3 The `h6` / `large` inversion is unresolved
+
+Open Question 4 stands. `--text-xl` (h6, 1→1.13rem) is smaller than `--text-2xl` (h5, flat 1.25rem)
+but larger than `--text-lg` (1.125→1.25rem) only below ~700px, above which `--text-lg` overtakes it.
+Values were transcribed faithfully rather than regularized. Re-asked at the start of Phase 2.
+
+### 8.4 SemiBold confirmed dead
+
+`Geist-SemiBold.woff2` is declared in `@font-face` and applied by no rule; `--font--primary-bold: 700`
+has no face to serve it. Only Regular and Medium are migrated.

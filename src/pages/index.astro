@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Button from '../components/Button.astro';
+
+/**
+ * Phase 1 placeholder. Exercises the shells and the token system so the
+ * scaffolding is verifiable; real content lands in Phase 2.
+ */
+---
+
+<BaseLayout
+  title="Outredge | Marketing sites and design systems for B2B tech startups"
+  description="Marketing sites and design systems for B2B tech startups in AI, dev tools, and fintech. Principal-led, no handoffs."
+>
+  <Section spaceTop="top" spaceBottom="lg" border>
+    <div class="flex flex-col gap-lg px-md">
+      <h1 class="text-h1 text-trim" data-reveal>
+        A marketing site as good as your product.
+      </h1>
+      <p class="text-body-lg text-text-muted max-w-measure" data-reveal>
+        Marketing sites and design systems for B2B tech startups in AI, dev tools,
+        and fintech. Principal-led, no handoffs.
+      </p>
+      <div class="flex flex-wrap gap-3xs" data-reveal>
+        <Button href="/contact" variant="primary">Book a call</Button>
+        <Button href="/work" variant="secondary">See the work</Button>
+      </div>
+    </div>
+  </Section>
+
+  <Section id="approach" theme="light" space="lg" border>
+    <div class="flex flex-col gap-md px-md">
+      <p class="text-eyebrow">Why teams hire Outredge</p>
+      <h2 class="text-h2 text-trim">Four things that hold true on every engagement.</h2>
+      <p class="text-body text-text-muted max-w-measure">
+        Placeholder section. Confirms that the Section shell owns rhythm, the
+        container hairlines render, and the type styles resolve from tokens.
+      </p>
+    </div>
+  </Section>
+
+  <Section id="pricing" space="lg" width="narrow" border>
+    <div class="flex flex-col gap-md px-md">
+      <p class="text-eyebrow">Pick your engagement</p>
+      <h2 class="text-h3 text-trim">Three engagements. One principal.</h2>
+      <p class="text-body text-text-muted">A narrower container, same rhythm.</p>
+    </div>
+  </Section>
+</BaseLayout>

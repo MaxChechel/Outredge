@@ -1,0 +1,60 @@
+---
+/**
+ * Button — renders <a> when given href, <button> otherwise.
+ *
+ * Colour comes entirely from the button token group in global.css, so a theme
+ * swap recolours every button with no variant classes in markup.
+ */
+interface Props {
+  variant?: 'primary' | 'secondary';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  /** Set for links leaving the site; adds rel and an accessible-name hint. */
+  external?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  variant = 'primary',
+  href,
+  type = 'button',
+  external = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+
+const VARIANT = {
+  primary: [
+    'bg-button-primary-bg text-button-primary-text border-button-primary-border',
+    'hover:bg-button-primary-bg-hover hover:text-button-primary-text-hover',
+    'hover:border-button-primary-border-hover',
+  ],
+  secondary: [
+    'bg-button-secondary-bg text-button-secondary-text border-button-secondary-border',
+    'hover:bg-button-secondary-bg-hover hover:text-button-secondary-text-hover',
+    'hover:border-button-secondary-border-hover',
+  ],
+} as const;
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : type}
+  rel={external ? 'noopener noreferrer' : undefined}
+  target={external ? '_blank' : undefined}
+  class:list={[
+    'inline-flex items-center justify-center gap-3xs',
+    'h-button-md px-md',
+    'rounded-sm border text-body-sm whitespace-nowrap',
+    'transition-colors duration-base ease-out',
+    VARIANT[variant],
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+  {external && <span class="sr-only">(opens in a new tab)</span>}
+</Tag>

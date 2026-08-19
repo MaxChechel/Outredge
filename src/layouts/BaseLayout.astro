@@ -1,0 +1,60 @@
+---
+import { Font } from 'astro:assets';
+import { canonicalUrl } from '../lib/urls';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Root-relative path to the share image. Supplied per-page in Phase 3. */
+  ogImage?: string;
+  /** Set on pages that should not be indexed. */
+  noindex?: boolean;
+}
+
+const { title, description, ogImage, noindex = false } = Astro.props;
+
+const canonical = canonicalUrl(Astro.url.pathname, Astro.site);
+const ogImageUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonical} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+
+    <!-- Emits @font-face for Geist and the matching <link rel="preload">. -->
+    <Font cssVariable="--font-geist" preload />
+
+    <link rel="icon" href="/favicon.png" type="image/png" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="/favicon-dark.png" type="image/png" media="(prefers-color-scheme: dark)" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  </head>
+
+  <body>
+    <Nav />
+
+    <!-- id="main" is the skip link's target. The export's skip link pointed at
+         an id that existed on no shipping page and was patched by script. -->
+    <main id="main">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

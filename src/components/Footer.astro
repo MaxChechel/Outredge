@@ -1,0 +1,42 @@
+---
+import Logo from './Logo.astro';
+import Section from './Section.astro';
+
+const links = [
+  { href: '/work', label: 'Work' },
+  { href: '/#approach', label: 'Approach' },
+  { href: '/#pricing', label: 'How it works' },
+  { href: '/contact', label: 'Contact' },
+] as const;
+
+const year = new Date().getFullYear();
+---
+
+<Section as="footer" space="md" border>
+  <div class="flex flex-col gap-lg p-md md:flex-row md:items-center md:justify-between">
+    <a href="/" class="inline-flex rounded-sm" aria-label="Outredge — home">
+      <Logo class="h-md" />
+    </a>
+
+    <nav aria-label="Footer">
+      <ul class="list-bare flex flex-wrap items-center gap-md">
+        {
+          links.map(({ href, label }) => (
+            <li>
+              <a
+                href={href}
+                class="text-body-sm text-text-muted transition-colors duration-base ease-out hover:text-text"
+              >
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <p class="text-caption text-text-faint">
+      &copy; {year} Outredge
+    </p>
+  </div>
+</Section>
