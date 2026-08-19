@@ -1,0 +1,23 @@
+---
+import ClientLogo from './ClientLogo.astro';
+import type { ClientSlug } from './ClientLogo.astro';
+
+interface Props {
+  label: string;
+  logos: readonly { name: string; slug: ClientSlug }[];
+}
+const { label, logos } = Astro.props as Props;
+---
+
+<div class="flex flex-col gap-md">
+  <p class="text-eyebrow">{label}</p>
+  <ul class="list-bare flex flex-wrap items-center gap-lg text-text-muted">
+    {
+      logos.map(({ name, slug }) => (
+        <li>
+          <ClientLogo slug={slug} title={`${name} logo`} class="h-logo max-w-logo" />
+        </li>
+      ))
+    }
+  </ul>
+</div>

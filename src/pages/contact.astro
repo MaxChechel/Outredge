@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Button from '../components/Button.astro';
+import FormField from '../components/FormField.astro';
+import { site } from '../data/site';
+
+/**
+ * The form is scaffolded but deliberately not wired: the backend decision is
+ * Phase 3. There is no `action`, so it cannot silently post nowhere; the submit
+ * button is disabled and labelled so the state is honest rather than broken.
+ */
+const services = [
+  'Website design & Webflow development',
+  'Webflow development (from provided design)',
+  'Website design',
+  'Other / Not sure yet',
+] as const;
+
+const engagements = ['One-off project', 'Monthly retainer', 'Not sure yet'] as const;
+
+const budgets = [
+  'Under $3,000',
+  '$3,000 – $5,000',
+  '$5,000 – $10,000',
+  '$10,000 – $15,000',
+  '$15,000 – $20,000',
+  '$20,000+',
+  'Not sure yet',
+] as const;
+---
+
+<BaseLayout
+  title="Outredge | Contact"
+  description="Book a 30-minute call to scope your project, or send a brief and you'll get a reply within one business day."
+>
+  <Section spaceTop="top" spaceBottom="lg" border>
+    <div class="grid gap-2xl p-md lg:grid-cols-2 lg:items-start">
+      <div class="flex flex-col gap-lg">
+        <h1 class="text-h1 text-trim" data-reveal>Let&rsquo;s talk about your project</h1>
+        <p class="text-body-lg text-text-muted max-w-measure" data-reveal>
+          Book a 30-minute call to scope your project, or send a brief and you&rsquo;ll get a
+          reply within one business day.
+        </p>
+        <div class="flex flex-wrap items-center gap-2xs" data-reveal>
+          <Button href={site.bookingUrl} variant="primary" external>Book a 30-min intro</Button>
+          <span class="text-body-sm text-text-muted">or</span>
+          <a href={`mailto:${site.email}`} class="text-body-sm underline underline-offset-4">
+            {site.email}
+          </a>
+        </div>
+      </div>
+
+      <form class="flex flex-col gap-lg" data-reveal>
+        <fieldset class="flex flex-col gap-md border-0 p-0">
+          <legend class="text-eyebrow mb-2xs">Contact details</legend>
+          <div class="grid gap-md sm:grid-cols-2">
+            <FormField label="Name" name="name" placeholder="John" required autocomplete="name" />
+            <FormField
+              label="Company"
+              name="company"
+              placeholder="Acme corp"
+              required
+              autocomplete="organization"
+            />
+            <FormField
+              label="Email address"
+              name="email"
+              type="email"
+              placeholder="email@company.com"
+              required
+              autocomplete="email"
+              inputmode="email"
+              class="sm:col-span-2"
+            />
+          </div>
+        </fieldset>
+
+        <fieldset class="flex flex-col gap-md border-0 p-0">
+          <legend class="text-eyebrow mb-2xs">Project details</legend>
+          <div class="grid gap-md sm:grid-cols-2">
+            <FormField label="Service you need" name="service" type="select" required options={services} />
+            <FormField
+              label="How would you like to work"
+              name="engagement"
+              type="select"
+              required
+              options={engagements}
+            />
+            <FormField
+              label="What is your budget"
+              name="budget"
+              type="select"
+              required
+              options={budgets}
+              class="sm:col-span-2"
+            />
+            <FormField
+              label="Tell us about the project"
+              name="message"
+              type="textarea"
+              placeholder="What are you looking to build? Any timeline or details that help understand the project."
+              class="sm:col-span-2"
+            />
+          </div>
+        </fieldset>
+
+        <div class="flex flex-col gap-2xs">
+          <Button type="submit" variant="primary" disabled>Submit</Button>
+          <p class="text-body-sm text-text-muted">
+            The form is not connected yet &mdash; use{' '}
+            <a href={site.bookingUrl} rel="noopener noreferrer" target="_blank">the booking link</a>{' '}
+            or email{' '}
+            <a href={`mailto:${site.email}`}>{site.email}</a> in the meantime.
+          </p>
+        </div>
+      </form>
+    </div>
+  </Section>
+</BaseLayout>

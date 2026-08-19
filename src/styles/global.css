@@ -131,6 +131,9 @@
   --container-main: 82rem;
   --container-narrow: 50rem;
   --container-measure: 70ch;
+  /* Short supporting copy set beside a heading; deliberately tighter than prose. */
+  --container-note: 38ch;
+  --container-logo: 8rem;
 
   --grid-columns: 12;
   --grid-gutter: 1rem;
@@ -141,6 +144,9 @@
   --spacing-nav: 4rem;
   --spacing-button-md: 3rem;
   --spacing-button-lg: 5rem;
+  /* Client wordmarks arrive with inconsistent viewBoxes (some 48 tall, some 24).
+     Capping height *and* width normalizes them optically, as the export did. */
+  --spacing-logo: 2.5rem;
 
   /* --- Borders, radii, focus --------------------------------------------- */
   --radius-none: 0px;
@@ -602,5 +608,75 @@
     font-size: 20px;
     font-weight: var(--font-weight-medium);
     letter-spacing: -0.6px;
+  }
+}
+
+/* Work card thumbnail. The lift on hover is a scale rather than a transform on
+   the card so the border and focus ring stay put. */
+@layer components {
+  .work-thumb {
+    transition: scale var(--duration-slow) var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .group:hover .work-thumb {
+      scale: 1.02;
+    }
+  }
+}
+
+/* FAQ disclosure icon: a plus that becomes a minus. Two 1px bars, no glyph, so
+   it inherits colour and never depends on an icon font. */
+@layer components {
+  .faq-item > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-icon {
+    position: relative;
+    display: block;
+    width: var(--spacing-xs);
+    height: var(--spacing-xs);
+  }
+
+  .faq-icon::before,
+  .faq-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: var(--border-width);
+    background-color: currentcolor;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .faq-icon::after {
+    transform: rotate(90deg);
+  }
+
+  .faq-item[open] .faq-icon::after {
+    transform: rotate(0deg);
+  }
+}
+
+/* Select chevron. Drawn in CSS so no icon asset or inline SVG is needed, and it
+   inherits the text colour under any theme. */
+@layer components {
+  .select-icon {
+    position: absolute;
+    top: 50%;
+    right: var(--spacing-2xs);
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: var(--border-width) solid currentcolor;
+    border-bottom: var(--border-width) solid currentcolor;
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  /* A select showing its placeholder reads as muted, like a real placeholder. */
+  .select-wrap select:has(option[value='']:checked) {
+    color: var(--color-text-faint);
   }
 }

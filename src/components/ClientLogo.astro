@@ -1,0 +1,41 @@
+---
+/**
+ * Client wordmark, inlined as SVG.
+ *
+ * The marks were drawn white for a dark background; their fills are rewritten
+ * to currentColor so they inherit --color-text and follow any theme. That only
+ * works inlined — an <img src="…svg"> is a separate document and would resolve
+ * currentColor against its own root. The export instead shipped them as <img>
+ * under `filter: invert()`, which happens to look right on one background only.
+ */
+const logos = import.meta.glob<{ default: any }>('../assets/clients/*.svg', { eager: true });
+
+export type ClientSlug =
+  | 'alphapoint' | 'blaze' | 'euclid-power' | 'flight-science' | 'flutterflow'
+  | 'lindy' | 'navy-yard-dc' | 'planthouse' | 'platter' | 'replit'
+  | 'sphere' | 'tokenforge' | 'xbow';
+
+interface Props {
+  slug: ClientSlug;
+  /** Accessible name. Omit for decorative use inside an already-labelled block. */
+  title?: string;
+  class?: string;
+}
+
+const { slug, title, class: className } = Astro.props as Props;
+
+const entry = logos[`../assets/clients/${slug}.svg`];
+if (!entry) {
+  throw new Error(
+    `ClientLogo: no SVG for "${slug}". Expected src/assets/clients/${slug}.svg.`,
+  );
+}
+const Mark = entry.default;
+---
+
+<Mark
+  class:list={['w-auto', className]}
+  role={title ? 'img' : 'presentation'}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+/>

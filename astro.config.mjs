@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig, fontProviders, svgoOptimizer } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
@@ -10,6 +10,14 @@ export default defineConfig({
   build: { format: 'file' },
 
   vite: { plugins: [tailwindcss()] },
+
+  experimental: {
+    // Client wordmarks are inlined so their fills can follow currentColor and
+    // therefore the theme. Unoptimized, their full-precision Figma path data
+    // was 73% of the homepage's bytes. Astro's built-in SVGO pass fixes that
+    // without adding a dependency — svgo already ships inside Astro.
+    svgOptimizer: svgoOptimizer(),
+  },
 
   // Geist, self-hosted and pre-subset to Latin by scripts/subset-fonts.py.
   // Astro fingerprints the files, emits @font-face, and renders preload links

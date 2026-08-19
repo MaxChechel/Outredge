@@ -1,0 +1,26 @@
+---
+import Section from './Section.astro';
+import Button from './Button.astro';
+import { site } from '../data/site';
+
+interface Props {
+  id?: string;
+}
+const { id = 'cta-banner' } = Astro.props;
+---
+
+<Section id={id} space="lg" border>
+  <div class="flex flex-col items-center gap-lg p-md text-center">
+    <div class="flex flex-col gap-2xs">
+      <h2 class="text-h2 text-trim">Ready to start?</h2>
+      <p class="text-body-lg text-text-muted max-w-measure">
+        Book a 30-minute call to scope your project, or send a brief and you&rsquo;ll get a
+        reply within one business day.
+      </p>
+    </div>
+    <div class="flex flex-wrap justify-center gap-3xs">
+      <Button href={site.bookingUrl} variant="primary" external>Book a call</Button>
+      <Button href="/contact" variant="secondary">Send a brief</Button>
+    </div>
+  </div>
+</Section>

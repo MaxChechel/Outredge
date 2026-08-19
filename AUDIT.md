@@ -534,11 +534,21 @@ Flag if you disagree; removing them later is a two-line change.
 
 The export emitted `clamp(0.875rem, …, 0.88rem)` — a 0.08px range. Written as a flat `0.875rem`.
 
-### 8.3 The `h6` / `large` inversion is unresolved
+### 8.3 The `h6` / `large` inversion — known quirk, deliberately preserved
 
-Open Question 4 stands. `--text-xl` (h6, 1→1.13rem) is smaller than `--text-2xl` (h5, flat 1.25rem)
-but larger than `--text-lg` (1.125→1.25rem) only below ~700px, above which `--text-lg` overtakes it.
-Values were transcribed faithfully rather than regularized. Re-asked at the start of Phase 2.
+**Resolved by the Phase 1 review: transcribe faithfully, do not regularize.** The rebuild renders
+identically to the Webflow site; type-scale redesign is out of scope.
+
+`--text-xl` (h6, 1→1.13rem) is smaller than `--text-2xl` (h5, flat 1.25rem), but relative to
+`--text-lg` (1.125→1.25rem) it inverts mid-scale: h6 is larger below roughly 700px and smaller above
+it, because `large` climbs faster. Two steps therefore swap rank depending on viewport width.
+
+This is carried as a **known quirk for a future design pass**, not a bug to fix in migration. If the
+type scale is ever revisited, this is the first thing to look at: either flatten `--text-lg` to a
+static 1.125rem or lift `--text-xl`'s ceiling above 1.25rem so the ramp is monotonic at every width.
+
+`--text-4xl` (h3) and `--text-lg` (large) are both **kept** per the same review; `large` becomes the
+lede/intro style in case study bodies.
 
 ### 8.4 SemiBold confirmed dead
 

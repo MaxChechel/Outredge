@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Button from '../components/Button.astro';
+---
+
+<BaseLayout title="Page not found | Outredge" noindex>
+  <Section spaceTop="top" spaceBottom="lg" border>
+    <div class="flex flex-col items-center gap-lg p-md text-center">
+      <p class="text-eyebrow">404</p>
+      <h1 class="text-h1 text-trim">Page not found</h1>
+      <p class="text-body-lg text-text-muted max-w-measure">
+        That page doesn&rsquo;t exist, or it moved. The work is a good place to pick back up.
+      </p>
+      <div class="flex flex-wrap justify-center gap-3xs">
+        <Button href="/" variant="primary">Back to homepage</Button>
+        <Button href="/work" variant="secondary">See the work</Button>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

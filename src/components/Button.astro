@@ -50,6 +50,9 @@ const VARIANT = {
     'h-button-md px-md',
     'rounded-sm border text-body-sm whitespace-nowrap',
     'transition-colors duration-base ease-out',
+    // A disabled control must read as disabled; the contact form ships one
+    // until the backend lands in Phase 3.
+    'disabled:pointer-events-none disabled:opacity-40',
     VARIANT[variant],
     className,
   ]}

@@ -1,0 +1,40 @@
+---
+import Button from './Button.astro';
+
+interface Props {
+  name: string;
+  kind: string;
+  body: string;
+  details: readonly string[];
+  price: string;
+  href: string;
+  highlight?: boolean;
+}
+
+const { name, kind, body, details, price, href, highlight = false } = Astro.props;
+---
+
+<li
+  class:list={[
+    'flex flex-col gap-md border border-border p-md',
+    highlight && 'bg-bg-subtle',
+  ]}
+>
+  <div class="flex flex-col gap-3xs">
+    <h3 class="text-h5 text-trim">{name}</h3>
+    <p class="text-body-sm text-text-muted">{kind}</p>
+  </div>
+
+  <p class="text-body-sm">{body}</p>
+
+  <ul class="list-bare flex flex-col gap-3xs border-t border-border pt-md">
+    {details.map((detail) => <li class="text-body-sm text-text-muted">{detail}</li>)}
+  </ul>
+
+  <div class="mt-auto flex flex-col gap-2xs pt-md">
+    <p class="text-h5 text-trim">{price}</p>
+    <Button href={href} variant={highlight ? 'primary' : 'secondary'} external>
+      Book a call
+    </Button>
+  </div>
+</li>

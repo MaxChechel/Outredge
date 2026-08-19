@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import WorkCard from '../components/WorkCard.astro';
+import CtaBanner from '../components/CtaBanner.astro';
+import { work } from '../data/work';
+---
+
+<BaseLayout
+  title="Work | Outredge"
+  description="Senior Webflow design and development for B2B tech startups. Principal-led, performance-built, no handoffs. Trusted by Replit, Lindy, XBOW, Sphere."
+>
+  <Section spaceTop="top" spaceBottom="lg" border>
+    <div class="flex flex-col gap-2xl p-md">
+      <div class="flex flex-col gap-md">
+        <h1 class="text-h1 text-trim" data-reveal>Selected work.</h1>
+        <p class="text-body-lg text-text-muted max-w-measure" data-reveal>
+          Marketing sites engineered to match the product. Webflow design and development for
+          B2B tech startups across AI, dev tools, and fintech.
+        </p>
+      </div>
+
+      <ul class="list-bare grid gap-2xl sm:grid-cols-2">
+        {work.map((item, i) => <WorkCard item={item} priority={i < 2} level={2} />)}
+      </ul>
+    </div>
+  </Section>
+
+  <CtaBanner />
+</BaseLayout>

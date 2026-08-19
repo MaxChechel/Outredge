@@ -1,0 +1,73 @@
+---
+/**
+ * Form field — label + control, always paired.
+ *
+ * The label wraps the control, so the association holds without an id/for pair
+ * that has to stay unique across the page.
+ */
+interface Props {
+  label: string;
+  name: string;
+  type?: 'text' | 'email' | 'textarea' | 'select';
+  placeholder?: string;
+  required?: boolean;
+  autocomplete?: string;
+  inputmode?: 'text' | 'email';
+  options?: readonly string[];
+  class?: string;
+}
+
+const {
+  label,
+  name,
+  type = 'text',
+  placeholder,
+  required = false,
+  autocomplete,
+  inputmode,
+  options = [],
+  class: className,
+} = Astro.props;
+
+const control =
+  'w-full border border-border bg-bg px-2xs py-2xs text-body-sm rounded-sm ' +
+  'transition-colors duration-base ease-out hover:border-border-strong ' +
+  'placeholder:text-text-faint';
+---
+
+<label class:list={['flex flex-col gap-3xs', className]}>
+  <span class="text-body-sm text-text-muted">
+    {label}
+    {required && <span class="sr-only">(required)</span>}
+  </span>
+
+  {
+    type === 'textarea' ? (
+      <textarea
+        name={name}
+        rows="5"
+        placeholder={placeholder}
+        required={required}
+        class:list={[control, 'resize-y']}
+      />
+    ) : type === 'select' ? (
+      <span class="select-wrap relative block">
+        <select name={name} required={required} class:list={[control, 'appearance-none pr-lg']}>
+          <option value="">Select one&hellip;</option>
+          {options.map((option) => <option value={option}>{option}</option>)}
+        </select>
+        <span class="select-icon" aria-hidden="true" />
+      </span>
+    ) : (
+      <input
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        required={required}
+        autocomplete={autocomplete}
+        inputmode={inputmode}
+        class={control}
+      />
+    )
+  }
+</label>

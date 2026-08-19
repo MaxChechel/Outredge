@@ -1,0 +1,29 @@
+---
+import ClientLogo from './ClientLogo.astro';
+import type { Testimonial } from '../data/testimonials';
+
+interface Props {
+  testimonial: Testimonial;
+  /** Larger treatment for the lead quote. */
+  featured?: boolean;
+}
+
+const { testimonial: t, featured = false } = Astro.props as Props;
+---
+
+<figure
+  class:list={[
+    'flex h-full flex-col gap-md border border-border p-md',
+    featured ? 'gap-lg p-lg' : '',
+  ]}
+>
+  <ClientLogo slug={t.logoSlug} title={`${t.company} logo`} class="h-md max-w-logo text-text-muted" />
+
+  <blockquote class:list={[featured ? 'text-h4' : 'text-body', 'text-trim']}>
+    &ldquo;{t.quote}&rdquo;
+  </blockquote>
+
+  <figcaption class="text-body-sm text-text-muted mt-auto">
+    {t.author}, {t.company}
+  </figcaption>
+</figure>

@@ -1,0 +1,37 @@
+---
+/**
+ * Eyebrow + heading + optional supporting copy. Used by every content section.
+ *
+ * The heading level is branched rather than rendered through a dynamic <Tag>:
+ * a tag resolved from a prop degrades Astro's prop-type inference for the whole
+ * component, so `<SectionHeader eyebrow={999} />` would compile silently.
+ */
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  /** Heading level. Visual size is identical; only the semantics change. */
+  as?: 'h2' | 'h3';
+  /** Supporting copy, set right on wide screens and stacked below on narrow. */
+  support?: string;
+  id?: string;
+  class?: string;
+}
+
+const { eyebrow, heading, as = 'h2', support, id, class: className } = Astro.props as Props;
+
+const headingClass = 'text-h2 text-trim max-w-measure';
+---
+
+<div
+  id={id}
+  class:list={[
+    'flex flex-col gap-md md:flex-row md:items-end md:justify-between md:gap-2xl',
+    className,
+  ]}
+>
+  <div class="flex flex-col gap-2xs">
+    {eyebrow && <p class="text-eyebrow">{eyebrow}</p>}
+    {as === 'h3' ? <h3 class={headingClass}>{heading}</h3> : <h2 class={headingClass}>{heading}</h2>}
+  </div>
+  {support && <p class="text-body text-text-muted max-w-note md:text-right">{support}</p>}
+</div>
