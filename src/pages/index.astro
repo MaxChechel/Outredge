@@ -1,26 +1,30 @@
 ---
+import { Image } from 'astro:assets';
+
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import Button from '../components/Button.astro';
-import WorkCard from '../components/WorkCard.astro';
+import ClientLogo from '../components/ClientLogo.astro';
+import HomeWorkCard from '../components/HomeWorkCard.astro';
 import FeatureCard from '../components/FeatureCard.astro';
 import QuoteCard from '../components/QuoteCard.astro';
 import PricingCard from '../components/PricingCard.astro';
-import LogoStrip from '../components/LogoStrip.astro';
 import Faq from '../components/Faq.astro';
 import CtaBanner from '../components/CtaBanner.astro';
+import SquaresBg from '../components/SquaresBg.astro';
+import CircleBg from '../components/CircleBg.astro';
 import JsonLd from '../components/JsonLd.astro';
 
 import { site } from '../data/site';
-import { getFeaturedWork } from '../lib/work';
 import { trustedBy, features, pricing, faq } from '../data/homepage';
-
+import { featuredTestimonial, gridTestimonials } from '../data/testimonials';
+import { getFeaturedWork } from '../lib/work';
 import { organizationSchema, websiteSchema } from '../lib/schema';
+import portrait from '../assets/max-chechel.avif';
 
 const featuredWork = await getFeaturedWork();
 const origin = Astro.site!.origin;
-import { featuredTestimonial, gridTestimonials } from '../data/testimonials';
 ---
 
 <BaseLayout
@@ -30,35 +34,47 @@ import { featuredTestimonial, gridTestimonials } from '../data/testimonials';
   <JsonLd schema={organizationSchema(origin)} />
   <JsonLd schema={websiteSchema(origin)} />
 
-  <!-- Hero -->
-  <Section spaceTop="top" spaceBottom="lg" border>
-    <div class="grid gap-2xl p-md lg:grid-cols-2 lg:items-start">
-      <div class="flex flex-col gap-lg">
-        <h1 class="text-h1 text-trim" data-reveal>A marketing site as good as your product.</h1>
-        <p class="text-body-lg text-text-muted max-w-measure" data-reveal>
-          Marketing sites and design systems for B2B tech startups in AI, dev tools, and
-          fintech. Principal-led, no handoffs.
-        </p>
-        <div class="flex flex-col gap-2xs" data-reveal>
-          <Button href={site.bookingUrl} variant="primary" external>Book a call</Button>
-          <p class="text-body-sm text-text-muted">
-            {site.reviewCount} five-star reviews on{' '}
-            <a href={site.contraUrl} rel="noopener noreferrer" target="_blank">Contra</a>
+  <!-- Hero. Twelve columns; the left half sticks for the height of the reel. -->
+  <Section space="none" width="main" border>
+    <div class="grid border-b border-border lg:grid-cols-2">
+      <div class="home-hero-sticky flex flex-col justify-between gap-2xl py-section-md pl-gutter pr-gutter lg:pr-0">
+        <div class="flex max-w-measure flex-col items-start gap-xl">
+          <h1 class="text-h1 text-trim" data-reveal>A marketing site as good as your product.</h1>
+          <p class="text-body-lg text-text-muted" data-reveal>
+            Marketing sites and design systems for B2B tech startups in AI, dev tools, and
+            fintech. Principal-led, no handoffs.
           </p>
+          <div class="flex flex-col gap-2xs" data-reveal>
+            <Button href={site.bookingUrl} variant="primary" external>Book a call</Button>
+            <p class="text-body-sm text-text-muted">
+              {site.reviewCount} five-star reviews on{' '}
+              <a href={site.contraUrl} rel="noopener noreferrer" target="_blank">Contra</a>
+            </p>
+          </div>
         </div>
-        <div data-reveal>
-          <LogoStrip label="Trusted by teams at:" logos={trustedBy} />
+
+        <div class="flex flex-col gap-md" data-reveal>
+          <p class="text-eyebrow">Trusted by teams at:</p>
+          <ul class="list-bare grid grid-cols-3 items-center gap-x-lg gap-y-xs text-text-muted">
+            {
+              trustedBy.map(({ name, slug }) => (
+                <li>
+                  <ClientLogo slug={slug} title={`${name} logo`} class="h-logo max-w-logo" />
+                </li>
+              ))
+            }
+          </ul>
         </div>
       </div>
 
-      <section aria-labelledby="featured-work" class="flex flex-col gap-lg" data-reveal>
+      <section aria-labelledby="featured-work" class="border-l-0 border-border lg:border-l">
         <h2 id="featured-work" class="sr-only">Selected work</h2>
-        <ul class="list-bare grid gap-lg sm:grid-cols-2">
-          {featuredWork.map((item, i) => <WorkCard item={item} priority={i < 2} />)}
-          <li class="sm:col-span-2">
+        <ul class="list-bare flex flex-col">
+          {featuredWork.map((item, i) => <HomeWorkCard item={item} priority={i < 1} />)}
+          <li>
             <a
               href="/work"
-              class="text-body-sm flex items-center justify-between gap-xs border-t border-border py-md transition-colors duration-base ease-out hover:text-text-muted"
+              class="flex items-center justify-between gap-2xs p-sm text-body-sm transition-colors duration-base ease-out hover:bg-surface-hover"
             >
               Review all work
               <span aria-hidden="true">&rarr;</span>
@@ -69,83 +85,99 @@ import { featuredTestimonial, gridTestimonials } from '../data/testimonials';
     </div>
   </Section>
 
+  <!-- Decorative orbit -->
+  <Section space="none" border>
+    <CircleBg />
+  </Section>
+
   <!-- Approach -->
-  <Section id="approach" space="lg" border>
-    <div class="flex flex-col gap-2xl p-md">
-      <SectionHeader
-        eyebrow="Why teams hire Outredge"
-        heading="Four things that hold true on every engagement."
-        support="Four constants across every engagement, retainer or fixed-price."
-      />
-      <ul class="list-bare grid gap-lg sm:grid-cols-2 lg:grid-cols-4">
-        {features.map((feature) => <FeatureCard {...feature} />)}
-      </ul>
+  <Section id="approach" space="none" border>
+    <SectionHeader
+      eyebrow="Why teams hire Outredge"
+      heading="Four things that hold true on every engagement."
+      support="Four constants across every engagement, retainer or fixed-price."
+    />
+    <div class="grid-ruled-2 grid md:grid-cols-2">
+      {features.map((feature) => <FeatureCard {...feature} />)}
     </div>
+    <SquaresBg />
   </Section>
 
   <!-- Testimonials -->
-  <Section space="lg" border>
-    <div class="flex flex-col gap-2xl p-md">
-      <SectionHeader
-        eyebrow="What clients say"
-        heading={`${site.reviewCount} five-star reviews on Contra`}
-        support="No fluff, only real reviews from clients on Contra."
-      />
-
-      <QuoteCard testimonial={featuredTestimonial} featured />
-
-      <ul class="list-bare grid gap-lg sm:grid-cols-2 lg:grid-cols-3">
-        {gridTestimonials.map((t) => <li><QuoteCard testimonial={t} /></li>)}
-      </ul>
-
-      <p class="text-body-sm text-text-muted text-center">
-        Read all reviews on{' '}
-        <a href={site.contraUrl} rel="noopener noreferrer" target="_blank">Contra</a>
-      </p>
+  <Section space="none" border>
+    <SectionHeader
+      eyebrow="What clients say"
+      heading={`${site.reviewCount} five-star reviews on Contra`}
+      support="No fluff, only real reviews from clients on Contra."
+    />
+    <QuoteCard testimonial={featuredTestimonial} featured />
+    <div class="grid-ruled-3 grid border-b border-border md:grid-cols-2 lg:grid-cols-3">
+      {gridTestimonials.map((t) => <QuoteCard testimonial={t} />)}
     </div>
+    <p class="text-body-sm text-text-muted px-gutter py-section-sm text-center">
+      Read all reviews on{' '}
+      <a href={site.contraUrl} rel="noopener noreferrer" target="_blank">Contra</a>
+    </p>
   </Section>
 
   <!-- Pricing -->
-  <Section id="pricing" space="lg" border>
-    <div class="flex flex-col gap-2xl p-md">
-      <SectionHeader
-        eyebrow="Pick your engagement"
-        heading="Three engagements. One principal."
-        support="Fixed-price for defined scope. Retainer for ongoing work. Senior throughout, regardless of the format."
-      />
-      <ul class="list-bare grid gap-lg lg:grid-cols-3">
-        {pricing.map((tier) => <PricingCard {...tier} />)}
-      </ul>
+  <Section id="pricing" space="none" border>
+    <SectionHeader
+      eyebrow="Pick your engagement"
+      heading="Three engagements. One principal."
+      support="Fixed-price for defined scope. Retainer for ongoing work. Senior throughout, regardless of the format."
+    />
+    <div class="grid-ruled-3 grid md:grid-cols-3">
+      {pricing.map((tier) => <PricingCard {...tier} />)}
     </div>
   </Section>
 
   <!-- About -->
-  <Section space="lg" width="narrow" border>
-    <div class="flex flex-col gap-md p-md">
-      <p class="text-eyebrow">Behind Outredge</p>
-      <h2 class="text-h2 text-trim">Principal-led, no handoffs.</h2>
-      <p class="text-body-lg text-text-muted">
-        Outredge is run by{' '}
-        <a href={site.linkedinUrl} rel="noopener noreferrer" target="_blank">Max Chechel</a>, a
-        design engineer who has built marketing sites for Replit, Lindy, Sphere, and others,
-        and was previously Lead developer at Juice and Paper Tiger.
-      </p>
-      <p class="text-body text-text-muted">
-        Every project goes through Max directly. No account managers, no junior handoffs, no
-        surprises in week three. Book a call and the conversation is with the person who builds
-        the site.
-      </p>
+  <Section space="none" border>
+    <div
+      class="flex flex-col items-center gap-md border-t border-border bg-bg-subtle px-gutter py-section-md text-center"
+    >
+      <Image
+        src={portrait}
+        alt="Max Chechel"
+        widths={[80, 160]}
+        sizes="5rem"
+        loading="lazy"
+        decoding="async"
+        class="w-portrait rounded-full grayscale"
+      />
+      <div class="flex flex-col items-center gap-xs">
+        <p class="text-eyebrow">Behind Outredge</p>
+        <h2 class="text-h2 text-trim">Principal-led, no handoffs.</h2>
+      </div>
+      <div class="flex max-w-measure flex-col gap-sm">
+        <p class="text-body">
+          Outredge is run by{' '}
+          <a href={site.linkedinUrl} rel="noopener noreferrer" target="_blank">Max Chechel</a>, a
+          design engineer who has built marketing sites for Replit, Lindy, Sphere, and others,
+          and was previously Lead developer at Juice and Paper Tiger.
+        </p>
+        <p class="text-body">
+          Every project goes through Max directly. No account managers, no junior handoffs, no
+          surprises in week three. Book a call and the conversation is with the person who
+          builds the site.
+        </p>
+      </div>
     </div>
   </Section>
 
   <!-- FAQ -->
-  <Section space="lg" border>
-    <div class="flex flex-col gap-2xl p-md">
-      <SectionHeader
-        eyebrow="Frequently asked"
-        heading="Questions, answered."
-        support="Still got something specific? Book a call — most answers take 5 minutes."
-      />
+  <Section space="none" border>
+    <div class="grid gap-lg border-t border-border px-gutter py-section-md lg:grid-cols-2 lg:gap-2xl">
+      <div class="flex flex-col gap-xs lg:sticky lg:top-2xl lg:self-start">
+        <p class="text-eyebrow">Frequently asked</p>
+        <h2 class="text-h2 text-trim">Questions, answered.</h2>
+        <p class="text-body-sm text-text-muted">
+          Still got something specific?{' '}
+          <a href={site.bookingUrl} rel="noopener noreferrer" target="_blank">Book a call</a>, most
+          answers take 5 minutes.
+        </p>
+      </div>
       <Faq items={faq} />
     </div>
   </Section>

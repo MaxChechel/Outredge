@@ -1,0 +1,25 @@
+---
+/**
+ * Decorative orbit ring.
+ *
+ * The export drew this with GSAP DrawSVG and MotionPath — 2.6 KB of script plus
+ * five plugin requests — to trace a circle and run dots around it. It is an
+ * outlined circle with four tick marks; CSS draws it, and `data-reveal` leaves
+ * the hook for the scroll-reveal system if it should animate in.
+ */
+---
+
+<div class="flex items-center justify-center py-section-lg" aria-hidden="true" data-reveal>
+  <svg
+    class="circle-bg w-full max-w-circle"
+    viewBox="0 0 400 400"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="200" cy="200" r="160" stroke="currentColor" stroke-width="1" />
+    <line x1="24" y1="200" x2="40" y2="200" stroke="currentColor" stroke-width="1" />
+    <line x1="360" y1="200" x2="376" y2="200" stroke="currentColor" stroke-width="1" />
+    <line x1="200" y1="24" x2="200" y2="40" stroke="currentColor" stroke-width="1" />
+    <line x1="200" y1="360" x2="200" y2="376" stroke="currentColor" stroke-width="1" />
+  </svg>
+</div>

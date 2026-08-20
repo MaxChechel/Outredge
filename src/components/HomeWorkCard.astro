@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import type { WorkCardItem } from '../lib/work';
+
+/**
+ * Homepage work reel item: full-width 3:2 media, then title and services on one
+ * row beneath, with a rule under each item. Stacked, not gridded — the reel
+ * scrolls past the sticky hero copy.
+ */
+interface Props {
+  item: WorkCardItem;
+  priority?: boolean;
+}
+
+const { item, priority = false } = Astro.props as Props;
+---
+
+<li class="group border-b border-border">
+  <a
+    href={item.href}
+    rel={item.external ? 'noopener noreferrer' : undefined}
+    target={item.external ? '_blank' : undefined}
+    class="flex flex-col gap-xs p-sm"
+  >
+    <div class="aspect-3/2 w-full overflow-hidden bg-bg-subtle">
+      <Image
+        src={item.thumbnail}
+        alt={`${item.title} — ${item.tags.toLowerCase()}`}
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 62rem) 45vw, 92vw"
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        class="work-thumb h-full w-full object-cover"
+      />
+    </div>
+    <div class="flex flex-wrap items-baseline justify-between gap-2xs">
+      <h3 class="text-h5 text-trim">{item.title}</h3>
+      <p class="text-body-sm text-text-muted">{item.tags}</p>
+    </div>
+  </a>
+</li>

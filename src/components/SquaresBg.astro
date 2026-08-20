@@ -1,0 +1,30 @@
+---
+import RingMark from './RingMark.astro';
+
+/**
+ * Decorative square lattice with the ring mark centred in it.
+ *
+ * The export built this with 45 empty divs and a GSAP timeline lighting cells
+ * at random. Here it is one grid whose gap *is* the rule — the wrapper carries
+ * the border colour and each cell paints the background over it, so 13 columns
+ * of hairlines cost no extra elements. Static: the reveal system owns motion.
+ */
+const COLUMNS = 13;
+const ROWS = 3;
+const CELLS = COLUMNS * ROWS;
+---
+
+<div
+  class="squares-bg grid border-t border-border bg-border"
+  style={`grid-template-columns: repeat(${COLUMNS}, 1fr);`}
+  aria-hidden="true"
+>
+  {
+    Array.from({ length: CELLS }).map((_, i) => (
+      <div class="aspect-square bg-bg" data-reveal-cell={i} />
+    ))
+  }
+  <div class="squares-bg-mark">
+    <RingMark class="h-2xl" />
+  </div>
+</div>

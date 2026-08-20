@@ -761,3 +761,68 @@ re-adding `'xbow'` to the `ClientSlug` union, and removing the redirect.
 
 **Still carried forward for Phase 5-lite:** `VIDEO_BASE` hostname, the wordmark's real traced path,
 the contact delivery hop, and the `/approach` + `/how-we-work` redirect ruling.
+
+---
+
+## 2026-08-20 — Correction: rebuilt the homepage against the live design
+
+You sent screenshots of outredge.com and were right — I had missed a lot. I treated the export as a
+content source and rebuilt layout from my own reading of it, instead of extracting what the CSS and
+markup actually specify. That was the wrong method, and it produced an approximation.
+
+**What I had wrong, and what it actually is**
+
+| # | Element | I built | Export specifies |
+|---|---|---|---|
+| 1 | **Wordmark** | placeholder `<text>Outredge</text>` | 8-path traced SVG, `viewBox 0 0 119 16`, uppercase OUTREDGE |
+| 2 | **Ring mark** | absent | 1-path glyph, `viewBox 0 0 158 165`, shown large above the footer |
+| 3 | **Hero left column** | static block | `position: sticky`, `height: calc(100vh - nav)` — copy holds while the reel scrolls |
+| 4 | **Trusted-by logos** | flex-wrap row | `grid-template-columns: 1fr 1fr 1fr`, two rows, 2rem/1rem gaps |
+| 5 | **Homepage work reel** | 2-column grid of cards | single column, `padding: space-4`, rule under each item |
+| 6 | **Section header** | flex row, no rules | 2-column grid, rule top **and** bottom, `padding: section-main gutter section-small`, items end-aligned |
+| 7 | **Eyebrow** | sentence case, 14px regular | **uppercase**, 12px, weight 500, `letter-spacing: .05em` |
+| 8 | **Feature cards** | 4 across, top border only, no icons | **2×2**, 24px icons, rules between cells via nth-child |
+| 9 | **Pricing cards** | 3 across, Button CTA | 3 across with icons, **underlined text link**, `padding: space-6 space-4` |
+| 10 | **About** | left-aligned, no image | centred on `background-2`, with a **grayscale circular portrait**, `max-width: 5rem` |
+| 11 | **FAQ** | full-width list, +/− icon | 2-column, bordered cards on `background-2`, **chevron** |
+| 12 | **Featured quote** | bordered card | centred, full-bleed on `background-2`, rule below |
+| 13 | **Squares lattice** | absent | 13×3 grid of squares, gap = rule, ring mark centred |
+| 14 | **Orbit ring** | absent | large outlined circle with tick marks |
+| 15 | **Footer** | small mark, one row | ring mark large and centred above the bottom row |
+
+**Also corrected:** `AUDIT.md` §4 flagged the `IMG_0980-1` family as unused. It is not — `IMG_0980-1.avif`
+is the About portrait. The `.png` files beside it are Webflow's responsive variants of it. Migrated
+as `src/assets/max-chechel.avif`.
+
+**Method change.** Everything above came out of `outredge.webflow.css` and the export markup —
+`.home_hero_left`, `.section_header`, `.feature_cards_wrapper`, `.u-eyebrow-text` and so on — rather
+than from eyeballing. Icons (4 feature + 3 pricing) and both logo marks were extracted from the
+inline SVG in `index.html`. The icons' two hardcoded colours (`#DEDEDF`, `#535862`) map exactly onto
+`--color-border` and `--color-text-muted`, so they were tokenised and now follow the theme.
+
+**Kept as deviations, not regressions:** the eyebrow uses `--color-text-muted`, not the export's
+50%-alpha grey, which measures 3.63:1 — `AUDIT.md` §9 deviation 1. The two decorative sections are
+CSS/SVG rather than GSAP, and `data-reveal` hooks are left for the scroll-reveal system, so they cost
+no JavaScript.
+
+**A second thing I got wrong: my own verification.** Two stale `astro dev` servers were holding port
+4321, so several recent "preview" screenshots were of the dev build, not `dist` — visible in the
+image URLs (`/_image?href=…`). Killed, rebuilt from clean, and re-verified against the real build.
+Also, `astro check` had been reporting **3 errors** in `functions/api/contact.ts` since Phase 4 —
+`PagesFunction` needs `@cloudflare/workers-types` — and I missed them because I was tailing three
+lines and the error count sits above that. The handler is now typed locally, no dependency added.
+
+**Verified after the rebuild** (against `dist`, clean build):
+
+- 11 pages × 7 widths: no horizontal overflow.
+- axe-core (wcag2a/aa, 21a/aa, 22aa, best-practice), 11 pages × 2 viewports: **0 violations**.
+- One `h1` per page, no heading skips, every image with alt, no broken images.
+- Executable JS unchanged: one module, case studies only.
+- Lighthouse mobile: `/` **100/100/100/100** (LCP 1.5 s, CLS 0, TBT 0);
+  `/case-studies/alphapoint` **100/100/100/100** (LCP 1.6 s, CLS 0, TBT 0).
+- `astro check`: 0 errors, 0 warnings, 0 hints.
+
+**Worth your eye:** the screenshots you sent are the homepage only. `/work`, `/contact`, the case
+study template and `/404` inherit the corrected header, quote, footer and eyebrow, but I have not
+had a reference for them. If they differ from the live site too, send those and I will do the same
+pass.

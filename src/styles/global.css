@@ -134,6 +134,7 @@
   /* Short supporting copy set beside a heading; deliberately tighter than prose. */
   --container-note: 38ch;
   --container-logo: 8rem;
+  --container-circle: 28rem;
 
   --grid-columns: 12;
   --grid-gutter: 1rem;
@@ -147,6 +148,12 @@
   /* Client wordmarks arrive with inconsistent viewBoxes (some 48 tall, some 24).
      Capping height *and* width normalizes them optically, as the export did. */
   --spacing-logo: 2.5rem;
+  /* Nav wordmark height, and the card-icon square. */
+  --spacing-logo-word: 1rem;
+  --spacing-icon: 1.5rem;
+  /* The ring mark above the footer. */
+  --spacing-portrait: 5rem;
+  --spacing-prefooter: clamp(5rem, 4.0323rem + 4.8387vw, 8rem);
 
   /* --- Borders, radii, focus --------------------------------------------- */
   --radius-none: 0px;
@@ -467,12 +474,15 @@
   .text-body-sm { font-size: var(--text-sm); }
   .text-caption { font-size: var(--text-xs); }
 
-  /* Eyebrow — the small label above a section heading. */
+  /* Eyebrow — the small label above a section heading. Uppercase, tracked out.
+     The export colours this with a 50%-alpha grey that measures 3.63:1; it uses
+     the muted token here instead, per AUDIT §9 deviation 1. */
   .text-eyebrow {
-    font-size: var(--text-sm);
-    font-weight: var(--font-weight-regular);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-medium);
     line-height: var(--leading-body);
-    letter-spacing: var(--tracking-normal);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     color: var(--color-text-muted);
   }
 
@@ -627,38 +637,25 @@
   }
 }
 
-/* FAQ disclosure icon: a plus that becomes a minus. Two 1px bars, no glyph, so
-   it inherits colour and never depends on an icon font. */
+/* FAQ disclosure chevron: a rotated corner, drawn in CSS so it needs no icon
+   asset and follows currentColor under any theme. */
 @layer components {
   .faq-item > summary::-webkit-details-marker {
     display: none;
   }
 
-  .faq-icon {
-    position: relative;
+  .faq-chevron {
     display: block;
-    width: var(--spacing-xs);
-    height: var(--spacing-xs);
-  }
-
-  .faq-icon::before,
-  .faq-icon::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: var(--border-width);
-    background-color: currentcolor;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: var(--border-width) solid currentcolor;
+    border-bottom: var(--border-width) solid currentcolor;
+    transform: translateY(-25%) rotate(45deg);
     transition: transform var(--duration-base) var(--ease-out);
   }
 
-  .faq-icon::after {
-    transform: rotate(90deg);
-  }
-
-  .faq-item[open] .faq-icon::after {
-    transform: rotate(0deg);
+  .faq-item[open] .faq-chevron {
+    transform: translateY(25%) rotate(225deg);
   }
 }
 
@@ -743,5 +740,129 @@
   .clip,
   .case-body > figure {
     margin-block: var(--spacing-lg);
+  }
+}
+
+/* ==========================================================================
+   9. GRID RULES
+
+   The design draws its structure with 1px rules between grid cells rather than
+   with gaps. Cell borders are applied per-cell so the outer edge stays clean —
+   the export did this with nth-child rules, which is also what handles the
+   reflow from 4 columns to 2 to 1.
+   ========================================================================== */
+
+@layer components {
+  /* Two-up card grid (features). Rules between columns and rows, none outside. */
+  .grid-ruled-2 > * {
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .grid-ruled-2 > *:nth-child(odd) {
+    border-right: var(--border-width) solid var(--color-border);
+  }
+
+  .grid-ruled-2 > *:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+
+  @media (width < 48rem) {
+    .grid-ruled-2 > *:nth-child(odd) {
+      border-right: 0;
+    }
+
+    .grid-ruled-2 > *:last-child {
+      border-bottom: 0;
+    }
+
+    .grid-ruled-2 > *:nth-last-child(2) {
+      border-bottom: var(--border-width) solid var(--color-border);
+    }
+  }
+
+  /* Three-up card grid (quotes, pricing). */
+  .grid-ruled-3 > * {
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .grid-ruled-3 > *:not(:nth-child(3n)) {
+    border-right: var(--border-width) solid var(--color-border);
+  }
+
+  .grid-ruled-3 > *:nth-last-child(-n + 3) {
+    border-bottom: 0;
+  }
+
+  @media (width < 62rem) {
+    .grid-ruled-3 > *:not(:nth-child(3n)) {
+      border-right: 0;
+    }
+
+    .grid-ruled-3 > *:nth-last-child(-n + 3) {
+      border-bottom: var(--border-width) solid var(--color-border);
+    }
+
+    .grid-ruled-3 > *:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  /* Card icons carry the border colour as a filled square behind the glyph. */
+  .size-icon {
+    width: var(--spacing-icon);
+    height: var(--spacing-icon);
+    aspect-ratio: 1;
+  }
+}
+
+/* Decorative lattice: the grid gap is the rule, so 39 cells need no borders. */
+@layer components {
+  .squares-bg {
+    gap: var(--border-width);
+    position: relative;
+  }
+
+  .squares-bg-mark {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  /* Below md the lattice would be a row of slivers; drop to 7 columns. */
+  @media (width < 48rem) {
+    .squares-bg {
+      grid-template-columns: repeat(7, 1fr) !important;
+    }
+
+    .squares-bg > [data-reveal-cell]:nth-child(n + 22) {
+      display: none;
+    }
+  }
+
+  .circle-bg {
+    color: var(--color-border);
+  }
+}
+
+/* Hero: the copy column stays put while the work reel scrolls past it. Only
+   above lg, and only when the viewer has not asked for reduced motion — a
+   sticky column that outruns the viewport is disorienting. */
+@layer components {
+  @media (width >= 62rem) {
+    .home-hero-sticky {
+      position: sticky;
+      top: var(--nav-height);
+      height: calc(100svh - var(--nav-height));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero-sticky {
+      position: static;
+      height: auto;
+    }
   }
 }

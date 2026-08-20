@@ -1,37 +1,47 @@
 ---
 /**
- * Eyebrow + heading + optional supporting copy. Used by every content section.
+ * Section header: eyebrow + heading on the left, supporting copy bottom-right.
  *
- * The heading level is branched rather than rendered through a dynamic <Tag>:
- * a tag resolved from a prop degrades Astro's prop-type inference for the whole
- * component, so `<SectionHeader eyebrow={999} />` would compile silently.
+ * A two-column grid framed by a rule top and bottom, with asymmetric vertical
+ * padding — more above than below — exactly as the export lays it out. It is
+ * full-bleed inside the container, so it sits flush to the container hairlines.
  */
 interface Props {
   eyebrow?: string;
   heading: string;
   /** Heading level. Visual size is identical; only the semantics change. */
   as?: 'h2' | 'h3';
-  /** Supporting copy, set right on wide screens and stacked below on narrow. */
   support?: string;
+  /** Top-align the two columns instead of baseline-ing them at the bottom. */
+  alignTop?: boolean;
   id?: string;
   class?: string;
 }
 
-const { eyebrow, heading, as = 'h2', support, id, class: className } = Astro.props as Props;
+const { eyebrow, heading, as = 'h2', support, alignTop = false, id, class: className } =
+  Astro.props as Props;
 
-const headingClass = 'text-h2 text-trim max-w-measure';
+const headingClass = 'text-h2 text-trim';
 ---
 
 <div
   id={id}
   class:list={[
-    'flex flex-col gap-md md:flex-row md:items-end md:justify-between md:gap-2xl',
+    'grid gap-md border-y border-border px-gutter pt-section-md pb-section-sm',
+    'md:grid-cols-2',
+    alignTop ? 'items-start' : 'items-end',
     className,
   ]}
 >
-  <div class="flex flex-col gap-2xs">
+  <div class="flex flex-col gap-xs">
     {eyebrow && <p class="text-eyebrow">{eyebrow}</p>}
     {as === 'h3' ? <h3 class={headingClass}>{heading}</h3> : <h2 class={headingClass}>{heading}</h2>}
   </div>
-  {support && <p class="text-body text-text-muted max-w-note md:text-right">{support}</p>}
+  {
+    support && (
+      <div class="flex md:justify-end">
+        <p class="text-body-sm text-text-muted max-w-note md:text-right">{support}</p>
+      </div>
+    )
+  }
 </div>

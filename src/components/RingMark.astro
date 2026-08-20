@@ -1,0 +1,21 @@
+---
+/** The Outredge ring glyph. Used large above the footer. */
+interface Props {
+  class?: string;
+  title?: string;
+}
+
+const { class: className, title } = Astro.props as Props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 158 165"
+  fill="none"
+  class:list={['w-auto', className]}
+  role={title ? 'img' : 'presentation'}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+>
+            <path d="M157.134 94.8955C151.162 134.12 118.261 164.122 78.5664 164.122C38.8723 164.122 5.97153 134.119 0 94.8955H27.0225C32.6197 118.911 53.5725 136.757 78.5664 136.757C103.561 136.757 124.514 118.911 130.111 94.8955H157.134ZM78.5664 0C117.994 0 150.721 29.6 157.011 68.4365H129.922C124.054 44.8205 103.286 27.3652 78.5664 27.3652C53.8471 27.3654 33.0801 44.8206 27.2119 68.4365H0.123047C6.41303 29.6001 39.139 0.000212735 78.5664 0Z" fill="currentColor"></path>
+          </svg>

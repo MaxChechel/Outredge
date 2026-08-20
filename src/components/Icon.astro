@@ -1,0 +1,24 @@
+---
+/**
+ * A card icon, inlined from the export. Their two fills are rewritten to
+ * --color-border and --color-text-muted, so they follow the theme.
+ */
+const icons = import.meta.glob<{ default: any }>('../assets/icons/*.svg', { eager: true });
+
+export type IconName =
+  | 'senior-expertise' | 'design-engineered' | 'first-project' | 'performance-seo'
+  | 'new-site' | 'build-figma' | 'webflow-partner';
+
+interface Props {
+  name: IconName;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props as Props;
+
+const entry = icons[`../assets/icons/${name}.svg`];
+if (!entry) throw new Error(`Icon: no SVG at src/assets/icons/${name}.svg`);
+const Glyph = entry.default;
+---
+
+<Glyph class:list={['size-icon shrink-0', className]} aria-hidden="true" />

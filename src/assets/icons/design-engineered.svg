@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <rect width="24" height="24" fill="var(--color-border)"></rect>
+                <rect x="6.29395" y="9.77246" width="4.45516" height="4.45516" rx="2.22758" fill="var(--color-text-muted)" stroke="var(--color-text-muted)" stroke-width="0.5"></rect>
+                <rect x="15.4775" y="9.87528" width="3.00476" height="3.00476" transform="rotate(45 15.4775 9.87528)" fill="var(--color-text-muted)" stroke="var(--color-text-muted)" stroke-width="0.5"></rect>
+                <rect x="3.25" y="3.25" width="17.5" height="17.5" stroke="var(--color-text-muted)" stroke-width="0.5"></rect>
+              </svg>

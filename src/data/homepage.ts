@@ -12,18 +12,22 @@ export const trustedBy = [
 /** "Why teams hire Outredge" — four constants. */
 export const features = [
   {
+    icon: 'senior-expertise',
     title: 'Senior expertise',
     body: "Built sites for Replit, Lindy, Sphere, and others. The person building your site is the person who's already shipped at the level you need.",
   },
   {
+    icon: 'design-engineered',
     title: 'Design engineered, not just built',
     body: 'Component architecture, design systems, GSAP, schema, custom JS. Webflow built the way real engineering teams ship software.',
   },
   {
+    icon: 'first-project',
     title: 'The first project is rarely the last',
     body: 'Most projects become ongoing work. Half of all retainer clients started as one-off projects. Built for the relationship, not the invoice.',
   },
   {
+    icon: 'performance-seo',
     title: 'Performance and SEO, built in',
     body: 'Core Web Vitals, schema markup, SEO-safe migrations. The technical SEO every modern site needs. Sites that load fast and rank.',
   },
@@ -32,6 +36,7 @@ export const features = [
 /** Three engagement models. `highlight` is the middle card the export emphasised. */
 export const pricing = [
   {
+    icon: 'new-site',
     name: 'New site or rebrand',
     kind: 'Design + Build · Fixed price',
     body: 'For founders and marketing teams launching, redesigning, or migrating from another platform. You get the design system, not just the pages.',
@@ -44,6 +49,7 @@ export const pricing = [
     highlight: false,
   },
   {
+    icon: 'build-figma',
     name: 'Build from Figma',
     kind: 'Build only · Fixed price',
     body: 'For teams with a finished Figma file who need a build that respects every design decision. Built in Webflow or in Astro/Next when the project calls for custom code.',
@@ -53,6 +59,7 @@ export const pricing = [
     highlight: true,
   },
   {
+    icon: 'webflow-partner',
     name: 'Webflow partner',
     kind: 'Ongoing · Monthly retainer',
     body: 'For marketing teams and scaling startups with continuous Webflow needs. New pages/sections, performance improvements, design system.',

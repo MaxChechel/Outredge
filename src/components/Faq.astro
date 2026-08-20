@@ -2,36 +2,33 @@
 /**
  * FAQ list.
  *
- * Native <details>/<summary>, so it is keyboard operable and announced as a
- * disclosure with no JavaScript. The export shipped 3.8 KB of accordion script
- * supporting hover-open, close-previous and open-by-default — none of which its
- * single instance used.
+ * Each item is a bordered card on the subtle background, with a chevron that
+ * rotates on open. Native <details>/<summary>, so it is keyboard operable and
+ * announced as a disclosure with no JavaScript — the export shipped 3.8 KB of
+ * accordion script supporting hover-open, close-previous and open-by-default,
+ * none of which its single instance used.
  */
 interface Props {
   items: readonly { question: string; answer: readonly string[] }[];
 }
 
-const { items } = Astro.props;
+const { items } = Astro.props as Props;
 ---
 
-<ul class="list-bare flex flex-col">
+<div class="flex flex-col gap-2xs">
   {
     items.map((item) => (
-      <li class="border-t border-border last:border-b">
-        <details class="faq-item group">
-          <summary
-            class="flex cursor-pointer list-none items-center justify-between gap-md py-md"
-          >
-            <h3 class="text-h5 text-trim">{item.question}</h3>
-            <span class="faq-icon shrink-0" aria-hidden="true" />
-          </summary>
-          <div class="flex flex-col gap-xs pb-md max-w-measure">
-            {item.answer.map((paragraph) => (
-              <p class="text-body text-text-muted">{paragraph}</p>
-            ))}
-          </div>
-        </details>
-      </li>
+      <details class="faq-item group border border-border bg-bg-subtle">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-xs px-sm py-sm">
+          <h3 class="text-h6 text-trim">{item.question}</h3>
+          <span class="faq-chevron shrink-0" aria-hidden="true" />
+        </summary>
+        <div class="flex flex-col gap-xs px-sm pb-sm">
+          {item.answer.map((paragraph) => (
+            <p class="text-body-sm text-text-muted">{paragraph}</p>
+          ))}
+        </div>
+      </details>
     ))
   }
-</ul>
+</div>

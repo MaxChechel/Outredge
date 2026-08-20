@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                <rect width="24" height="24" fill="var(--color-border)"></rect>
+                <rect x="10.75" y="10.4976" width="3.00476" height="3.00476" fill="var(--color-text-muted)" stroke="var(--color-text-muted)" stroke-width="0.5"></rect>
+                <rect x="3.99756" y="10.4976" width="3.00476" height="3.00476" fill="var(--color-text-muted)" stroke="var(--color-text-muted)" stroke-width="0.5"></rect>
+                <rect x="16.9976" y="10.4976" width="3.00476" height="3.00476" fill="var(--color-text-muted)" stroke="var(--color-text-muted)" stroke-width="0.5"></rect>
+              </svg>

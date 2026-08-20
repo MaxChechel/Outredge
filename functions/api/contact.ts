@@ -42,7 +42,17 @@ async function verifyTurnstile(token: string, secret: string, ip: string | null)
   return data.success === true;
 }
 
-export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
+/**
+ * Typed locally rather than with Cloudflare's `PagesFunction`, which lives in
+ * @cloudflare/workers-types — a dependency whose only job here would be one
+ * type alias, and which would pull Workers globals into the Astro tsconfig.
+ */
+interface RequestContext {
+  request: Request;
+  env: Env;
+}
+
+export const onRequestPost = async ({ request, env }: RequestContext): Promise<Response> => {
   const form = await request.formData();
 
   // 1. Honeypot — a real browser never fills a hidden field.
