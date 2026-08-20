@@ -826,3 +826,24 @@ lines and the error count sits above that. The handler is now typed locally, no 
 study template and `/404` inherit the corrected header, quote, footer and eyebrow, but I have not
 had a reference for them. If they differ from the live site too, send those and I will do the same
 pass.
+
+**Follow-up pass — detail corrections**
+
+Three more differences found by comparing my build against the reference, each traced back to the
+export's CSS rather than guessed:
+
+| Element | Was | Now | Source |
+|---|---|---|---|
+| **Nav rule** | `border-b` on the container, so it stopped at 82rem, and `border-x` ran vertical hairlines *through* the nav | rule on the full-width `<header>`; container hairlines start below it | `.nav_component { border-bottom }` — the border is on the outer wrapper, not the container |
+| **Nav wordmark** | height-driven, 119px wide | width-driven at `6rem`, height auto | `.nav_desktop_logo { width: 6rem }` |
+| **Footer** | wordmark SVG + links + an invented `© 2026 Outredge` | plain "Outredge" text, three links centred, Contact right, **no copyright** | `<div>Outredge</div>` + `.footer_links_wrap` + a separate Contact `text_link` |
+| **Prefooter mark** | fixed clamp height | `width: 15%` of the container | `.prefooter_logo { width: 15% }` |
+
+The copyright line was mine, not the export's — removed.
+
+Checked and **not** a bug: the wordmark's open `O`. Magnified 8×, it is the brand's ring glyph used
+as the letterform, which is what the export ships; at 16px it just reads as a slightly open O.
+
+Re-verified after these changes: 11 pages × 7 widths no overflow, axe-core **0 violations** across
+11 pages × 2 viewports, Lighthouse mobile **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and
+`/case-studies/alphapoint` (LCP 1.7 s, CLS 0), `astro check` clean, executable JS unchanged.

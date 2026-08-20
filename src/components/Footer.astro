@@ -1,27 +1,24 @@
 ---
-import Logo from './Logo.astro';
 import RingMark from './RingMark.astro';
 import Section from './Section.astro';
-import { footerLinks } from '../data/site';
+import { navLinks, site } from '../data/site';
 ---
 
 <Section as="footer" space="none" border>
-  <!-- Prefooter: the ring mark, large and centred. -->
+  <!-- Prefooter: the ring mark, sized as a share of the container like the export. -->
   <div class="flex items-center justify-center border-t border-border py-section-md">
-    <RingMark class="h-prefooter text-text" title="Outredge" />
+    <RingMark class="w-prefooter text-text" title={site.name} />
   </div>
 
   <div
-    class="flex flex-col items-center gap-md border-t border-border px-gutter py-sm md:flex-row md:justify-between"
+    class="flex flex-col items-center gap-md border-t border-border px-gutter pt-md pb-2xl md:flex-row md:justify-between"
   >
-    <a href="/" class="inline-flex rounded-sm" aria-label="Outredge — home">
-      <Logo />
-    </a>
+    <p class="text-body-sm">{site.name}</p>
 
     <nav aria-label="Footer">
-      <ul class="list-bare flex flex-wrap items-center justify-center gap-md">
+      <ul class="list-bare flex flex-wrap items-center justify-center gap-sm">
         {
-          footerLinks.map(({ href, label }) => (
+          navLinks.map(({ href, label }) => (
             <li>
               <a
                 href={href}
@@ -35,6 +32,11 @@ import { footerLinks } from '../data/site';
       </ul>
     </nav>
 
-    <p class="text-body-sm text-text-muted">&copy; {new Date().getFullYear()} Outredge</p>
+    <a
+      href="/contact"
+      class="text-body-sm text-text-muted transition-colors duration-base ease-out hover:text-text"
+    >
+      Contact
+    </a>
   </div>
 </Section>

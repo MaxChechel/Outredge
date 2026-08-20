@@ -149,7 +149,8 @@
      Capping height *and* width normalizes them optically, as the export did. */
   --spacing-logo: 2.5rem;
   /* Nav wordmark height, and the card-icon square. */
-  --spacing-logo-word: 1rem;
+  /* The nav sizes the wordmark by width, as the export does. */
+  --spacing-nav-logo: 6rem;
   --spacing-icon: 1.5rem;
   /* The ring mark above the footer. */
   --spacing-portrait: 5rem;
@@ -865,4 +866,11 @@
       height: auto;
     }
   }
+}
+
+/* The prefooter mark is a share of the container width, not a fixed size —
+   `.prefooter_logo { width: 15% }` in the export. */
+@utility w-prefooter {
+  width: 15%;
+  min-width: 4rem;
 }

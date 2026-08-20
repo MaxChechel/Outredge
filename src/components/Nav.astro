@@ -27,16 +27,18 @@ const isCurrent = (href: string) =>
 
 <a href="#main" class="skip-link text-body-sm">Skip to main content</a>
 
-<header class="sticky top-0 z-40 bg-bg">
-  <div class="container-gutter max-w-main border-x border-b border-border">
+<!-- The rule under the nav spans the full viewport; the container hairlines
+     start below it, as in the export where .nav_component carries the border. -->
+<header class="sticky top-0 z-40 border-b border-border bg-bg">
+  <div class="container-gutter max-w-main">
     <nav aria-label="Main" class="flex h-nav items-center justify-between gap-md">
       <a
         href="/"
-        class="inline-flex items-center rounded-sm"
+        class="inline-flex w-nav-logo items-center rounded-sm"
         aria-label="Outredge — home"
         aria-current={pathname === '/' ? 'page' : undefined}
       >
-        <Logo />
+        <Logo class="w-full" />
       </a>
 
       <!-- Desktop links. Hidden below lg, where the disclosure takes over. -->
