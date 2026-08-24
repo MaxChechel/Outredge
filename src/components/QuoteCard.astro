@@ -17,7 +17,7 @@ const { testimonial: t, featured = false } = Astro.props as Props;
 {
   featured ? (
     <figure class="flex flex-col items-center gap-sm bg-bg-subtle px-gutter py-section-md text-center">
-      <ClientLogo slug={t.logoSlug} title={`${t.company} logo`} class="h-md max-w-logo text-text-muted" />
+      <ClientLogo slug={t.logoSlug} title={`${t.company} logo`} class="text-text-muted" />
       <blockquote class="text-h4 text-trim max-w-measure">
         &ldquo;{t.quote}&rdquo;
       </blockquote>
@@ -27,7 +27,7 @@ const { testimonial: t, featured = false } = Astro.props as Props;
     </figure>
   ) : (
     <figure class="flex h-full flex-col items-start gap-md px-sm py-lg">
-      <ClientLogo slug={t.logoSlug} title={`${t.company} logo`} class="h-md max-w-logo text-text-muted" />
+      <ClientLogo slug={t.logoSlug} title={`${t.company} logo`} class="text-text-muted" />
       <blockquote class="text-body-sm text-trim">&ldquo;{t.quote}&rdquo;</blockquote>
       <figcaption class="text-body-sm text-text-muted mt-auto">
         {t.author}, {t.company}

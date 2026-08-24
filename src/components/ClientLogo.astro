@@ -7,8 +7,21 @@
  * works inlined — an <img src="…svg"> is a separate document and would resolve
  * currentColor against its own root. The export instead shipped them as <img>
  * under `filter: invert()`, which happens to look right on one background only.
+ *
+ * Sizing: Astro emits the source `width`/`height` attributes on the <svg>, and
+ * with `width: auto` alongside a `max-width` Chrome collapses the box to a
+ * square — every mark rendered 40x40 and letterboxed its glyph to roughly 18px
+ * tall. Setting an explicit `aspect-ratio` from the viewBox makes the width
+ * derive from the height deterministically. The `max-width` cap is the export's
+ * (`.logo_img { height: 2.5rem; max-width: 8rem }`), which is what keeps a wide
+ * mark like Alphapoint from towering over the rest.
  */
 const logos = import.meta.glob<{ default: any }>('../assets/clients/*.svg', { eager: true });
+const sources = import.meta.glob<string>('../assets/clients/*.svg', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+});
 
 export type ClientSlug =
   | 'alphapoint' | 'blaze' | 'euclid-power' | 'flight-science' | 'flutterflow'
@@ -24,17 +37,23 @@ interface Props {
 
 const { slug, title, class: className } = Astro.props as Props;
 
-const entry = logos[`../assets/clients/${slug}.svg`];
+const key = `../assets/clients/${slug}.svg`;
+const entry = logos[key];
 if (!entry) {
-  throw new Error(
-    `ClientLogo: no SVG for "${slug}". Expected src/assets/clients/${slug}.svg.`,
-  );
+  throw new Error(`ClientLogo: no SVG for "${slug}". Expected src/assets/clients/${slug}.svg.`);
 }
 const Mark = entry.default;
+
+const viewBox = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(sources[key] ?? '');
+if (!viewBox) {
+  throw new Error(`ClientLogo: "${slug}" has no parsable viewBox; cannot derive its aspect ratio.`);
+}
+const ratio = `${viewBox[1]} / ${viewBox[2]}`;
 ---
 
 <Mark
-  class:list={['w-auto', className]}
+  class:list={['client-logo', className]}
+  style={`aspect-ratio: ${ratio};`}
   role={title ? 'img' : 'presentation'}
   aria-label={title}
   aria-hidden={title ? undefined : 'true'}

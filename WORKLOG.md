@@ -847,3 +847,32 @@ as the letterform, which is what the export ships; at 16px it just reads as a sl
 Re-verified after these changes: 11 pages × 7 widths no overflow, axe-core **0 violations** across
 11 pages × 2 viewports, Lighthouse mobile **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and
 `/case-studies/alphapoint` (LCP 1.7 s, CLS 0), `astro check` clean, executable JS unchanged.
+
+**Follow-up — client logos were rendering at ~40% of their intended size**
+
+Every client wordmark was collapsing to a 40×40 square and letterboxing its glyph to roughly 18px
+tall, everywhere they appear: the hero strip, the quote cards, and the case study hero.
+
+**Cause.** Astro's SVG component emits the source `width`/`height` attributes on the `<svg>`. Combined
+with `width: auto` and a `max-width` cap, Chrome resolved the box to a square instead of deriving the
+width from the viewBox ratio. `w-auto` looked correct and was not.
+
+**Fix.** `ClientLogo` now parses each mark's viewBox with a second `?raw` glob and sets an explicit
+inline `aspect-ratio`, so the width derives from the height deterministically. Sizing moved into one
+`.client-logo` rule matching the export's `.logo_img { height: 2.5rem; max-width: 8rem }`, and the
+per-call-site sizing classes are gone — there is now one place that decides how big a wordmark is.
+
+Measured before and after, at the export's 2.5rem height:
+
+| Mark | Before | After | Expected |
+|---|---|---|---|
+| Replit | 40×40 | **88×40** | 88×40 |
+| Lindy | 40×40 | **67×40** | 67×40 |
+| Sphere | 40×40 | **88×40** | 88×40 |
+| FlutterFlow | 40×40 | **105×40** | 105×40 |
+| Flight Science | 37×24 | **61×40** | 61×40 |
+| Alphapoint | 40×40 | **128×40** | 247×40, capped to 128 by `max-width` — as the export does |
+
+Re-verified: 77 page/width combinations with **0 overflow**, axe-core **0 violations** across 11
+pages × 2 viewports, Lighthouse mobile **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and
+`/case-studies/alphapoint` (LCP 1.7 s, CLS 0), `astro check` clean.

@@ -874,3 +874,14 @@
   width: 15%;
   min-width: 4rem;
 }
+
+/* Client wordmarks. Height-driven with a width cap, matching the export's
+   `.logo_img { height: 2.5rem; max-width: 8rem }`; the per-mark aspect ratio is
+   set inline from its viewBox so the width derives correctly. */
+@layer components {
+  .client-logo {
+    height: var(--spacing-logo);
+    width: auto;
+    max-width: var(--container-logo);
+  }
+}

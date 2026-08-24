@@ -59,7 +59,7 @@ const origin = Astro.site!.origin;
             {
               trustedBy.map(({ name, slug }) => (
                 <li>
-                  <ClientLogo slug={slug} title={`${name} logo`} class="h-logo max-w-logo" />
+                  <ClientLogo slug={slug} title={`${name} logo`} />
                 </li>
               ))
             }
