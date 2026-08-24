@@ -40,7 +40,7 @@ const origin = Astro.site!.origin;
       <div class="home-hero-sticky flex flex-col justify-between gap-2xl py-section-md pl-gutter pr-gutter lg:pr-0">
         <div class="flex max-w-measure flex-col items-start gap-xl">
           <h1 class="text-h1 text-trim" data-reveal>A marketing site as good as your product.</h1>
-          <p class="text-body-lg text-text-muted" data-reveal>
+          <p class="text-body text-text-muted max-w-subtext" data-reveal>
             Marketing sites and design systems for B2B tech startups in AI, dev tools, and
             fintech. Principal-led, no handoffs.
           </p>
@@ -54,7 +54,10 @@ const origin = Astro.site!.origin;
         </div>
 
         <div class="flex flex-col gap-md" data-reveal>
-          <p class="text-eyebrow">Trusted by teams at:</p>
+          <!-- Sentence case at body size, per the export. This is not one of the
+               uppercase section eyebrows; it was an <h3 class="u-color-secondary">
+               there, demoted to a <p> per AUDIT §9 deviation 6. -->
+          <p class="text-body text-text-muted">Trusted by teams at:</p>
           <ul class="list-bare grid grid-cols-3 items-center gap-x-lg gap-y-xs text-text-muted">
             {
               trustedBy.map(({ name, slug }) => (

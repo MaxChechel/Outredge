@@ -135,6 +135,8 @@
   --container-note: 38ch;
   --container-logo: 8rem;
   --container-circle: 28rem;
+  /* .home_hero_subtext { max-width: 51ch } */
+  --container-subtext: 51ch;
 
   --grid-columns: 12;
   --grid-gutter: 1rem;
@@ -883,5 +885,15 @@
     height: var(--spacing-logo);
     width: auto;
     max-width: var(--container-logo);
+  }
+}
+
+/* Button box. The export sizes by padding with line-height 1, not a fixed
+   height, and the top padding is 0.15rem greater than the bottom — optical
+   centring against the cap height rather than the line box. */
+@layer components {
+  .button-main {
+    padding: 0.9rem 1.5rem 0.75rem;
+    line-height: 1;
   }
 }

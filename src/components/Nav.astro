@@ -1,6 +1,5 @@
 ---
 import Logo from './Logo.astro';
-import Button from './Button.astro';
 
 /**
  * Site navigation.
@@ -58,9 +57,13 @@ const isCurrent = (href: string) =>
         }
       </ul>
 
-      <div class="hidden lg:block">
-        <Button href="/contact" variant="primary">Contact</Button>
-      </div>
+      <a
+        href="/contact"
+        class="hidden text-body transition-colors duration-base ease-out hover:text-text-muted lg:block"
+        aria-current={isCurrent('/contact') ? 'page' : undefined}
+      >
+        Contact
+      </a>
 
       <!-- Mobile disclosure. -->
       <details class="nav-disclosure lg:hidden">
@@ -88,8 +91,10 @@ const isCurrent = (href: string) =>
                 </li>
               ))
             }
-            <li class="pt-3xs">
-              <Button href="/contact" variant="primary" class="w-full">Contact</Button>
+            <li>
+              <a href="/contact" class="text-h5" aria-current={isCurrent('/contact') ? 'page' : undefined}>
+                Contact
+              </a>
             </li>
           </ul>
         </div>

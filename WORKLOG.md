@@ -876,3 +876,24 @@ Measured before and after, at the export's 2.5rem height:
 Re-verified: 77 page/width combinations with **0 overflow**, axe-core **0 violations** across 11
 pages × 2 viewports, Lighthouse mobile **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and
 `/case-studies/alphapoint` (LCP 1.7 s, CLS 0), `astro check` clean.
+
+**Follow-up — four hero/nav details, from a side-by-side against the live site**
+
+| # | Element | Ours | Export says |
+|---|---|---|---|
+| 1 | **Hero subtext** | `text-body-lg` (18–20px) | `.home_hero_subtext { max-width: 51ch }` and **no font-size** — so body size, 16px. This was the wrapping difference: ours broke after "in AI, dev", the original after "in AI, dev tools,". |
+| 2 | **"Trusted by teams at:"** | uppercase tracked eyebrow | `<h3 class="u-color-secondary">` with no text-style class — **sentence case at body size**. It is not one of the uppercase section eyebrows. Still demoted from `h3` to `p` per §9 deviation 6; only the styling was wrong. |
+| 3 | **Nav "Contact"** | primary Button | `<a class="text_link is-no-border">` — a **plain text link**, no background. |
+| 4 | **Button box** | fixed `height: 3rem`, 14px text | `padding: .9rem 1.5rem .75rem; line-height: 1` at body size — padding-driven, 44px tall, and the top padding is 0.15rem greater than the bottom, which is optical centring against the cap height. |
+
+Measured after: button 44px at 16px with `14.4/24/12px` padding; subtext 16px at 541px (= 51ch);
+label 16px, `text-transform: none`; nav Contact `<a>` with a transparent background.
+
+**Discrepancy worth flagging.** The export markup and your latest screenshot both show nav Contact as
+a plain text link, but the *first* set of screenshots you sent showed it as a black button. I have
+followed the export. If the live site has since changed to a button, say so and it is a one-line
+revert.
+
+Re-verified: 0 overflow across 11 pages × 7 widths, axe-core **0 violations** across 11 pages × 2
+viewports, Lighthouse mobile **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and
+`/case-studies/alphapoint` (LCP 1.6 s, CLS 0), `astro check` clean.
