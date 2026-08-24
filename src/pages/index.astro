@@ -37,7 +37,14 @@ const origin = Astro.site!.origin;
   <!-- Hero. Twelve columns; the left half sticks for the height of the reel. -->
   <Section space="none" width="main" border>
     <div class="grid border-b border-border lg:grid-cols-2">
-      <div class="home-hero-sticky flex flex-col justify-between gap-2xl py-section-md pl-gutter pr-gutter lg:pr-0">
+      <!-- The export's left column is a full-height flex with space-between: a
+           spacer above the copy, and below the logo grid only its own 1rem
+           margin. So the vertical padding is asymmetric, not py-*.
+           The top step is section-sm rather than the export's section-main —
+           a requested reduction, not a transcription. -->
+      <div
+        class="home-hero-sticky flex flex-col justify-between gap-2xl pt-section-sm pb-xs pl-gutter pr-gutter lg:pr-0"
+      >
         <div class="flex max-w-measure flex-col items-start gap-xl">
           <h1 class="text-h1 text-trim" data-reveal>A marketing site as good as your product.</h1>
           <p class="text-body text-text-muted max-w-subtext" data-reveal>

@@ -884,7 +884,10 @@
   .client-logo {
     height: var(--spacing-logo);
     width: auto;
-    max-width: var(--container-logo);
+    /* The 8rem cap is the export's, but at 320px a three-column strip gives each
+       mark ~85px, and a capped-but-not-clamped Alphapoint overflowed its cell.
+       min() keeps the cap without letting it exceed the column. */
+    max-width: min(var(--container-logo), 100%);
   }
 }
 

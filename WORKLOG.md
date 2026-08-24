@@ -897,3 +897,41 @@ revert.
 Re-verified: 0 overflow across 11 pages × 7 widths, axe-core **0 violations** across 11 pages × 2
 viewports, Lighthouse mobile **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and
 `/case-studies/alphapoint` (LCP 1.6 s, CLS 0), `astro check` clean.
+
+**Follow-up — hero vertical padding, and XBOW back in the logo strip**
+
+*Hero left column.* Was `py-section-md`, so ~5rem of padding sat below the logo grid. The export
+builds that column as a full-height flex with `justify-content: space-between`, a
+`section-space--main` spacer **above** the copy, and below the logos only their own
+`.home_hero_logos { margin-bottom: 1rem }`. The padding is asymmetric, not `py-*`. Now
+`pt-section-md pb-xs` — measured 80px top / 16px bottom at 1440px, with 16px below the logos.
+
+*Sixth logo.* The export's strip carries six marks and the sixth is XBOW. Per your ruling it is
+**back in the hero strip only**, in the export's position (Replit, XBOW, Lindy, Sphere, Alphapoint,
+FlutterFlow). This narrows the earlier ruling from "no XBOW presence at all" to "no XBOW *work*
+shown". Containment verified in the built output:
+
+| File | "xbow" occurrences |
+|---|---|
+| `index.html` | **1** — the strip logo's `aria-label` |
+| `work.html`, `contact.html`, `404.html`, `sitemap.xml` | 0 |
+| all case studies | 0 |
+| "Lindy, XBOW" in body copy or meta descriptions | 0 |
+
+Still withheld: the case study, the work-grid entry, the "Senior expertise" card, the About
+paragraph, and both meta descriptions. `/case-studies/xbow` still 301s to `/work`.
+`drafts/README.md` and `AUDIT.md` §9 deviation 11 updated to match.
+
+*Two corrections while doing the above.*
+
+**Overflow regression, caught by the sweep.** Restoring the sixth logo pushed the strip over at 320px:
+each of three columns is ~85px there, and Alphapoint's `max-width: 8rem` cap does not shrink to fit
+its cell. Now `max-width: min(var(--container-logo), 100%)` — the export's cap, clamped to the
+column. Back to 0 overflow across 11 pages × 7 widths. Worth noting the sweep caught this rather
+than a screenshot; at 1440px it looked fine.
+
+**Hero top padding reduced, at your request.** This is a **deliberate deviation from the export**,
+not a transcription fix: `.u-section-spacer` above the hero copy is `section-space--main`
+(4→5rem, measured 80px at 1440px). Reduced one step to `section-sm` — measured **48px at 1440px,
+41px at 390px**. Bottom stays at the export's 16px. Recorded here rather than in `AUDIT.md` §9,
+since §9 is the "original was broken" list and this is a design change you asked for.

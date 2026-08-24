@@ -10,14 +10,17 @@ paragraph of its brief, solution and result is byte-identical to
 `replit-vibecon`; only the hero meta (client, year, services) and the media
 (XBOW-1/2/3, two XBOW screenshots) are XBOW's own.
 
-Per ruling, **XBOW is out of scope entirely** — the site ships with no XBOW
-presence: no case study, no work-grid entry, no logo in the hero strip, and no
-name in body copy or meta descriptions.
+Per ruling, XBOW is out of scope **as work**: no case study, no work-grid entry,
+and no mention in body copy or meta descriptions.
 
-The draft is kept dormant, untouched, along with its assets:
+It *is* kept as a trust mark in the hero "Trusted by teams at:" strip — that one
+exception was ruled separately, so `src/assets/clients/xbow.svg` lives in `src/`
+and `'xbow'` remains in the `ClientSlug` union.
 
-    drafts/assets/clients/xbow.svg
+The draft is kept dormant, untouched, along with its remaining assets:
+
     drafts/assets/work/xbow.avif
+    drafts/assets/clients/  (empty — the wordmark is back in src/)
     drafts/assets/posters/xbow-{cover,2,3}.jpg
     drafts/assets/case-studies/xbow-{1,2}.avif
 
@@ -34,9 +37,8 @@ and poster generation skip them rather than resurrecting them.
    `WORKLOG.md`).
 2. Move `drafts/assets/*` back into the matching `src/assets/` folders.
 3. Move `xbow.mdx` into `src/content/case-studies/`.
-4. Re-add `'xbow'` to the `ClientSlug` union in `src/components/ClientLogo.astro`.
-5. Remove `'XBOW-*'` from `DORMANT` in `scripts/stage_videos.py`, then re-run
+4. Remove `'XBOW-*'` from `DORMANT` in `scripts/stage_videos.py`, then re-run
    `stage_videos.py` and `grab-posters.py`.
-6. Delete the `/case-studies/xbow` redirect from `public/_redirects`.
-7. Decide whether XBOW returns to the hero logo strip (`src/data/homepage.ts`)
-   and to the body copy noted in `WORKLOG.md`.
+5. Delete the `/case-studies/xbow` redirect from `public/_redirects`.
+6. Decide whether XBOW returns to the body copy noted in `WORKLOG.md` (the hero
+   logo strip already carries it).

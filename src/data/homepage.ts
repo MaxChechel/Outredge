@@ -1,8 +1,15 @@
 import { site } from './site';
 
-/** Logos in the hero "Trusted by teams at:" strip. */
+/**
+ * Logos in the hero "Trusted by teams at:" strip, in the export's order.
+ *
+ * XBOW appears here and nowhere else: it is out of scope as *work* — no case
+ * study, no work-grid entry, no mention in body copy or meta descriptions — but
+ * is kept as a trust mark. See drafts/README.md.
+ */
 export const trustedBy = [
   { name: 'Replit', slug: 'replit' },
+  { name: 'XBOW', slug: 'xbow' },
   { name: 'Lindy', slug: 'lindy' },
   { name: 'Sphere', slug: 'sphere' },
   { name: 'Alphapoint', slug: 'alphapoint' },
