@@ -1070,3 +1070,24 @@ toggle, which is the current behaviour, so the panel cannot end up stuck closed.
 
 **Still zero executable JavaScript on the homepage** — 0 external `.js`, 0 non-`ld+json` scripts.
 77 page/width checks 0 failures, axe-core 0 violations across 11 pages × 2 viewports.
+
+**Follow-up — pricing icon alignment and engagement hover transition**
+
+1. **"align icons to top".** The pricing card icon carried `mt-3xs`, nudging it below the title.
+   Removed — measured icon top and title top now both at the same y, delta **0**.
+2. **"add transiton"** on the engagement marks. `[svg-animate]` already transitioned `transform`, but
+   `.engagement-bg-item` changed `color` on hover with no transition, so the colour snapped while the
+   shape eased. Added `transition: color`.
+
+**The border item was already fixed** in `94f9423`, before those screenshots were taken. Mapping every
+horizontal rule around the CTA in the current build confirms one line at each edge:
+
+```
+y=6781  top    div.flex.flex-col      <- CTA banner border-top
+y=7159  top    div.flex.items-center  <- prefooter border-top
+```
+
+Nothing else draws a rule between the FAQ and the footer. The annotated state — no top rule, doubled
+bottom rule — is exactly what the build looked like *before* that commit.
+
+Verified: 77 page/width checks 0 failures, axe-core 0 violations across 11 pages × 2 viewports.

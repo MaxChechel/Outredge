@@ -1004,6 +1004,9 @@
 @layer components {
   .engagement-bg-item {
     padding: 30%;
+    /* Pairs with the scale on [svg-animate]: without this the colour snapped
+       while the shape eased, which read as a glitch rather than a hover. */
+    transition: color var(--duration-base) var(--ease-out);
   }
 }
 
