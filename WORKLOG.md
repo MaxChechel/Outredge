@@ -993,3 +993,48 @@ its own check count, so a missing runner can no longer read as a pass. Real resu
 Re-verified: **77 page/width checks, 0 failures** (overflow, single h1, heading skips, broken images,
 missing alt), axe-core **0 violations** across 11 pages × 2 viewports, Lighthouse mobile
 **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and `/case-studies/alphapoint` (LCP 1.6 s, CLS 0).
+
+**Follow-up — orbit graphic: side gap, invisible strokes, and no animation**
+
+Three faults, two of them mine and one a real find from the animation source you sent.
+
+1. **Gap at the sides.** I had wrapped the SVG in `px-gutter`, so the horizontal rules stopped short
+   of the container hairlines. The export's `.bg_svg` sits directly in the container. Removed.
+2. **Strokes almost invisible.** The export carries
+   `.bg_svg svg [stroke] { stroke-width: 1px; vector-effect: non-scaling-stroke }`. Without it the
+   strokes are drawn in a 1863-unit viewBox scaled to ~1310px, so a 1-unit stroke renders at ~0.7px
+   and washes out. This is why the figure looked like a ghost. Now a true 1px at any width.
+3. **No animation.** Two separate bugs:
+   - `animation-timeline: view()` was set on the `<path>`. `view()` measures the *subject's own box*,
+     and an SVG path has none, so the timeline never advanced. The timeline is now named on the
+     wrapping element and referenced by the paths.
+   - Then the CSS minifier folded the timeline into the `animation` shorthand as
+     `animation: linear both circle-draw --circle-bg`. The timeline was removed from that shorthand
+     in the spec, so the browser dropped the whole declaration and `animation-name` computed to
+     `none`. Written as longhands now, with a comment, because the shorthand is a trap here.
+
+   Measured across the scroll: dashoffset **1.00 → 0.93 → 0.43**, i.e. drawing. `pathLength="1"`
+   normalises each stroke so the offset is a plain 1→0 with nothing to measure. Where scroll-driven
+   animations are unsupported, and under `prefers-reduced-motion`, the strokes are simply shown.
+
+**Hover and motion ported from the inline styles you sent.** All CSS; the export drove these from
+GSAP, which is not shipped:
+
+| Behaviour | Source |
+|---|---|
+| Lattice **trail** — overlay snaps on, fades out over 0.6s, so a pointer leaves a wake | `.squares_bg_item::after` |
+| Client marks at 50%, up to full on card hover | `.card_component:hover .logo_img` |
+| Engagement marks darken and scale 1.05 | `.pricing_bg_item:hover [svg-animate]` |
+| Work reel item, "Review all work" row and FAQ item hover fills | `.home_work_item`, `.home_work_all_wrapper`, `.accordion_item` |
+
+My earlier lattice hover was a plain background swap on the cell; the `::after` overlay with an
+instant-on, slow-off transition is what produces the trail, and it is not the same effect.
+
+**Filed, not built:** the homepage work-reel video script you sent (sequential preload, scroll-driven
+single-video playback, poster shown while paused). The reel currently renders stills — video lands
+with the CDN migration, and that script is the reference for it.
+
+Re-verified: **77 page/width checks, 0 failures**, axe-core **0 violations** across 11 pages × 2
+viewports, Lighthouse mobile **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and
+`/case-studies/alphapoint` (LCP 1.6 s, CLS 0). The homepage still ships **no executable JavaScript** —
+its two `<script>` tags are both `application/ld+json`.

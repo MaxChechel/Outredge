@@ -66,7 +66,7 @@ const origin = Astro.site!.origin;
                uppercase section eyebrows; it was an <h3 class="u-color-secondary">
                there, demoted to a <p> per AUDIT §9 deviation 6. -->
           <p class="text-body text-text-muted">Trusted by teams at:</p>
-          <ul class="list-bare grid grid-cols-3 items-center gap-x-lg gap-y-xs text-text-muted">
+          <ul class="logo-strip list-bare grid grid-cols-3 items-center gap-x-lg gap-y-xs text-text-muted">
             {
               trustedBy.map(({ name, slug }) => (
                 <li>
@@ -85,7 +85,7 @@ const origin = Astro.site!.origin;
           <li>
             <a
               href="/work"
-              class="flex items-center justify-between gap-2xs p-sm text-body-sm transition-colors duration-base ease-out hover:bg-surface-hover"
+              class="work-all flex items-center justify-between gap-2xs p-sm text-body-sm transition-colors duration-base ease-out"
             >
               Review all work
               <span aria-hidden="true">&rarr;</span>

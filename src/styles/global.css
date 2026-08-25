@@ -848,21 +848,6 @@
     pointer-events: none;
   }
 
-  /* `.squares_bg_item.is-active` fills a cell with the border colour; the export
-     drove that from a GSAP timeline picking cells at random. Here it is a hover,
-     which costs nothing and gives the lattice the same behaviour under a
-     pointer. Suppressed under reduced motion. */
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .squares-bg > [data-reveal-cell] {
-      transition: background-color var(--duration-slow) var(--ease-out);
-    }
-
-    .squares-bg > [data-reveal-cell]:hover {
-      background-color: var(--color-border);
-      transition-duration: var(--duration-fast);
-    }
-  }
-
   /* Below md the lattice would be a row of slivers; drop to 7 columns. */
   @media (width < 48rem) {
     .squares-bg {
@@ -874,16 +859,55 @@
     }
   }
 
-  /* The two accent strokes are drawn on by the scroll-reveal system. Until it
-     runs they are hidden, so the static border-coloured figure reads alone —
-     and under reduced motion they are simply shown. */
+  /* The two accent strokes draw themselves on as the graphic scrolls into view.
+     `pathLength="1"` on each path normalises its length, so the dash offset is
+     a plain 1 -> 0 with no measuring and no JavaScript: this is a CSS
+     scroll-driven animation, not an animation library.
+
+     `data-reveal-path` is left on the elements, so when the scroll-reveal system
+     lands it can take these over; delete this block at that point. */
+  /* The timeline is declared on the wrapper, not the paths: `view()` tracks the
+     subject's own box, and an SVG <path> has none for it to measure — with the
+     timeline on the path the animation simply never advanced. A named timeline
+     on the wrapping element is resolved by its descendants. */
+  .circle-bg-wrap {
+    view-timeline-name: --circle-bg;
+    view-timeline-axis: block;
+  }
+
+  /* Longhands, deliberately: with the `animation` shorthand the CSS minifier
+     folds the timeline into it as `animation: linear both circle-draw
+     --circle-bg`, which is invalid — the timeline was removed from that
+     shorthand — so the browser drops the whole declaration and nothing runs. */
   .circle-bg [data-reveal-path] {
-    opacity: 0;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation-name: circle-draw;
+    animation-duration: 1ms;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: --circle-bg;
+    animation-range: cover 15% cover 60%;
+  }
+
+  @keyframes circle-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* Where scroll-driven animations are unsupported, show the strokes outright
+     rather than leaving an invisible half of the figure. */
+  @supports not (animation-timeline: view()) {
+    .circle-bg [data-reveal-path] {
+      stroke-dashoffset: 0;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .circle-bg [data-reveal-path] {
-      opacity: 1;
+      animation-name: none;
+      stroke-dashoffset: 0;
     }
   }
 }
@@ -945,5 +969,86 @@
 @layer components {
   .engagement-bg-item {
     padding: 30%;
+  }
+}
+
+/* ==========================================================================
+   10. HOMEPAGE MOTION AND HOVER
+
+   Ported from the export's inline <style> blocks. All of it is CSS: the export
+   drove the equivalents from GSAP, which is not shipped here.
+   ========================================================================== */
+
+@layer components {
+  /* The orbit strokes are drawn in a 1863-unit viewBox scaled down to the
+     container, so without this they thin out to a fraction of a pixel.
+     `.bg_svg svg [stroke]` in the export. */
+  .circle-bg [stroke] {
+    stroke-width: var(--border-width);
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* Client marks sit at half strength and come up on card hover. */
+  .client-logo {
+    opacity: 0.5;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+
+  /* The lattice trail: an overlay that snaps on and fades out slowly, so a
+     pointer leaves a wake across the grid rather than lighting one cell. */
+  .squares-bg > [data-reveal-cell] {
+    position: relative;
+  }
+
+  .squares-bg > [data-reveal-cell]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-border);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s var(--ease-out);
+  }
+
+  .squares-bg-mark {
+    z-index: 1;
+  }
+
+  /* Decorative marks scale and darken under the pointer. */
+  .engagement-bg-item [svg-animate] {
+    transform-origin: center;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .squares-bg > [data-reveal-cell]:hover::after {
+      opacity: 1;
+      transition-duration: 0s;
+    }
+
+    .quote-card:hover .client-logo,
+    .logo-strip:hover .client-logo {
+      opacity: 1;
+    }
+
+    .engagement-bg-item:hover {
+      color: var(--color-text-muted);
+    }
+
+    .engagement-bg-item:hover [svg-animate] {
+      transform: scale(1.05);
+    }
+
+    .home-work-item:hover {
+      background-color: var(--color-surface-hover);
+    }
+
+    .work-all:hover {
+      background-color: var(--color-bg-subtle);
+    }
+
+    .faq-item:hover {
+      background-color: var(--color-surface-hover);
+    }
   }
 }
