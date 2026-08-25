@@ -964,3 +964,32 @@ default `size-icon` and my width class fought it at equal specificity. `Icon` no
 Re-verified: 0 overflow across 11 pages × 7 widths, axe-core **0 violations** across 11 pages × 2
 viewports, Lighthouse mobile **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and
 `/case-studies/alphapoint` (LCP 1.6 s, CLS 0), `astro check` clean.
+
+**Follow-up — the orbit graphic was invented, not transcribed**
+
+`CircleBg` was one of two things I built from imagination rather than from the export (the other was
+the squares lattice). It rendered a 400×400 square with four tick marks. The export has a real
+figure, and it is not a circle: a **1863×563 band** where a horizontal rule swells into a circular
+bump, with a concentric ring at the centre.
+
+Replaced with the export's own SVG — seven strokes:
+
+| Element | Colour | Role |
+|---|---|---|
+| `data-circle-center` | border | the concentric ring |
+| `data-circle-path-1` / `-4` | border | the horizontal rules, left and right |
+| `data-circle-path-2` / `-3` | border | the lower and upper arcs of the bump |
+| `data-cirlce-path` ×2 | **text** | the accent strokes GSAP drew on with DrawSVG |
+
+The two accent strokes keep the reveal hook and are hidden until revealed; under
+`prefers-reduced-motion` they are simply shown. **One deliberate difference:** the export also sets
+`.bg_svg { opacity: 0 }` and fades the whole graphic in from script, which would leave it invisible
+with no JS. Here the static border-coloured figure is always visible and only the accent strokes wait.
+
+*Also worth recording:* the first verification run after this change reported "0 overflow" from a
+script `/tmp` had cleared — `grep -c` had counted an empty stream. The sweep is rewritten to print
+its own check count, so a missing runner can no longer read as a pass. Real result below.
+
+Re-verified: **77 page/width checks, 0 failures** (overflow, single h1, heading skips, broken images,
+missing alt), axe-core **0 violations** across 11 pages × 2 viewports, Lighthouse mobile
+**100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and `/case-studies/alphapoint` (LCP 1.6 s, CLS 0).

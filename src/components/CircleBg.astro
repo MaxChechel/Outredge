@@ -1,25 +1,33 @@
 ---
 /**
- * Decorative orbit ring.
+ * The orbit graphic between the hero and the approach section.
  *
- * The export drew this with GSAP DrawSVG and MotionPath — 2.6 KB of script plus
- * five plugin requests — to trace a circle and run dots around it. It is an
- * outlined circle with four tick marks; CSS draws it, and `data-reveal` leaves
- * the hook for the scroll-reveal system if it should animate in.
+ * Lifted from the export rather than approximated: a 1863x563 band where a
+ * horizontal rule meets a circular bump, with a centred ring. Five strokes in
+ * the border colour form the static figure; the two `data-reveal-path` strokes
+ * are in the text colour and sit on top — those are the ones the export drew in
+ * with GSAP DrawSVG, and they carry the reveal hook.
+ *
+ * The export also set `.bg_svg { opacity: 0 }` and faded the whole thing in from
+ * script, which would leave the graphic invisible with no JS. Here the static
+ * figure is always visible and only the accent strokes wait to be revealed.
  */
 ---
 
-<div class="flex items-center justify-center py-section-lg" aria-hidden="true" data-reveal>
+<div class="px-gutter py-section-md">
   <svg
-    class="circle-bg w-full max-w-circle"
-    viewBox="0 0 400 400"
-    fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 1863 563"
+    fill="none"
+    class="circle-bg w-full"
+    aria-hidden="true"
   >
-    <circle cx="200" cy="200" r="160" stroke="currentColor" stroke-width="1" />
-    <line x1="24" y1="200" x2="40" y2="200" stroke="currentColor" stroke-width="1" />
-    <line x1="360" y1="200" x2="376" y2="200" stroke="currentColor" stroke-width="1" />
-    <line x1="200" y1="24" x2="200" y2="40" stroke="currentColor" stroke-width="1" />
-    <line x1="200" y1="360" x2="200" y2="376" stroke="currentColor" stroke-width="1" />
+    <circle data-circle-center="" cx="932.397" cy="282.397" r="248.897" stroke="var(--color-border)"></circle>
+    <path data-circle-path-3="" d="M1212 281.5C1212 126.584 1086.42 1 931.5 1C776.584 1 651 126.584 651 281.5" stroke="var(--color-border)"></path>
+    <path data-circle-path-2="" d="M651 282C651 436.916 776.584 562.5 931.5 562.5C1086.42 562.5 1212 436.916 1212 282" stroke="var(--color-border)"></path>
+    <path data-circle-path-1="" d="M1 281.5H651.5" stroke="var(--color-border)"></path>
+    <path data-circle-path-4="" d="M1212 281.5H1862.5" stroke="var(--color-border)"></path>
+    <path data-reveal-path d="M0 281.5H650C650 126.584 775.584 1 930.5 1C1085.42 1 1211 126.584 1211 281.5H1861.5" stroke="var(--color-text)"></path>
+    <path data-reveal-path d="M1861.5 282L1211.5 282C1211.5 436.916 1085.92 562.5 931 562.5C776.084 562.5 650.5 436.916 650.5 282L2.45221e-05 282" stroke="var(--color-text)"></path>
   </svg>
 </div>

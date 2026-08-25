@@ -134,7 +134,6 @@
   /* Short supporting copy set beside a heading; deliberately tighter than prose. */
   --container-note: 38ch;
   --container-logo: 8rem;
-  --container-circle: 28rem;
   /* .home_hero_subtext { max-width: 51ch } */
   --container-subtext: 51ch;
   /* .about_content { max-width: 32rem } */
@@ -875,8 +874,17 @@
     }
   }
 
-  .circle-bg {
-    color: var(--color-border);
+  /* The two accent strokes are drawn on by the scroll-reveal system. Until it
+     runs they are hidden, so the static border-coloured figure reads alone —
+     and under reduced motion they are simply shown. */
+  .circle-bg [data-reveal-path] {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .circle-bg [data-reveal-path] {
+      opacity: 1;
+    }
   }
 }
 
