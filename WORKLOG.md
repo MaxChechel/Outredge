@@ -935,3 +935,32 @@ not a transcription fix: `.u-section-spacer` above the hero copy is `section-spa
 (4→5rem, measured 80px at 1440px). Reduced one step to `section-sm` — measured **48px at 1440px,
 41px at 390px**. Bottom stays at the export's 16px. Recorded here rather than in `AUDIT.md` §9,
 since §9 is the "original was broken" list and this is a design change you asked for.
+
+**Follow-up — nine annotated items from the marked-up screenshots**
+
+| # | Item | Fix | Source |
+|---|---|---|---|
+| 1 | **"missed section"** above pricing | Built `EngagementBg`: three cells, middle rule-bordered, each holding a 210×210 outline mark inset by 30% | `.pricing_bg_wrapper` / `.pricing_bg_item { color: border; padding: 30% }` |
+| 2 | **"gap"** between CTA and prefooter | The CTA was its own padded `Section`, which broke the container hairlines. Padding moved onto the banner so the rules run unbroken into the footer | `.cta_banner` sits inside the container |
+| 3 | CTA had no background | Subtle background + rule beneath, and the copy is two explicit lines | `.cta_banner { background-color: background-2; border-bottom }` and the export's `<br>` |
+| 4 | **"line"** under the featured quote | Added the rule | `.quote_featured { border-bottom }` |
+| 5 | **"smaller logo"** in the lattice | 48px → **16px** | `.logo_mark_sm { width: space-3 }` — I had used a section-scale token |
+| 6 | **"hover animation"** on the lattice | Cells fill with the border colour on hover, suppressed under reduced motion | `.squares_bg_item.is-active { background-color: border }`, which the export drove from a GSAP timeline |
+| 7 | **"one line"** feature support copy | Removed my 38ch cap; the export only constrains the *pricing* support copy, at 50ch with an explicit break | `u-max-width-50ch` appears on pricing only |
+| 8 | **"less width for text"** in About | 70ch → **32rem** | `.about_content { max-width: 32rem }` |
+| 9 | **"make less spacing"** ×2 in the hero | Gap between h1, subtext and CTA: 2.25–2.5rem → **1.75rem** | `.home_hero_copy { gap: 1.75rem }` |
+
+Plus **"smaller logo" / "more padding"** on the prefooter mark: reduced from the export's `width: 15%`
+to 10%, and the space beneath it deepened to `section-lg`. That one is a requested change, not a
+transcription — the container-relative sizing is kept so it still scales.
+
+Measured after: feature support 1 line, About 512px (32rem), lattice mark 16px, prefooter mark 128px,
+featured quote border 1px, hero copy gap 28px (1.75rem).
+
+*One bug found along the way.* The engagement marks first rendered at 24px: `Icon` applied its
+default `size-icon` and my width class fought it at equal specificity. `Icon` now takes an explicit
+`size` prop (`card` | `full`) instead of layering classes.
+
+Re-verified: 0 overflow across 11 pages × 7 widths, axe-core **0 violations** across 11 pages × 2
+viewports, Lighthouse mobile **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and
+`/case-studies/alphapoint` (LCP 1.6 s, CLS 0), `astro check` clean.

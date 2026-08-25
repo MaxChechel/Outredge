@@ -14,12 +14,19 @@ interface Props {
   support?: string;
   /** Top-align the two columns instead of baseline-ing them at the bottom. */
   alignTop?: boolean;
+  /** Cap the support copy at 50ch. Uncapped by default — the export only
+      constrains it on the pricing header. */
+  narrowSupport?: boolean;
   id?: string;
   class?: string;
 }
 
-const { eyebrow, heading, as = 'h2', support, alignTop = false, id, class: className } =
+const { eyebrow, heading, as = 'h2', support, alignTop = false, narrowSupport = false, id, class: className } =
   Astro.props as Props;
+
+// Support copy arrives either as a plain string or, when it needs a line break,
+// as a named slot. Either one should render the column.
+const hasSupport = Boolean(support) || Astro.slots.has('support');
 
 const headingClass = 'text-h2 text-trim';
 ---
@@ -38,9 +45,11 @@ const headingClass = 'text-h2 text-trim';
     {as === 'h3' ? <h3 class={headingClass}>{heading}</h3> : <h2 class={headingClass}>{heading}</h2>}
   </div>
   {
-    support && (
+    hasSupport && (
       <div class="flex md:justify-end">
-        <p class="text-body-sm text-text-muted max-w-note md:text-right">{support}</p>
+        <p class:list={["text-body-sm text-text-muted md:text-right", narrowSupport && "max-w-support"]}>
+          <slot name="support">{support}</slot>
+        </p>
       </div>
     )
   }

@@ -16,7 +16,7 @@ const { testimonial: t, featured = false } = Astro.props as Props;
 
 {
   featured ? (
-    <figure class="flex flex-col items-center gap-sm bg-bg-subtle px-gutter py-section-md text-center">
+    <figure class="flex flex-col items-center gap-sm border-b border-border bg-bg-subtle px-gutter py-section-md text-center">
       <ClientLogo slug={t.logoSlug} title={`${t.company} logo`} class="text-text-muted" />
       <blockquote class="text-h4 text-trim max-w-measure">
         &ldquo;{t.quote}&rdquo;

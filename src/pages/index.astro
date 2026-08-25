@@ -14,6 +14,7 @@ import Faq from '../components/Faq.astro';
 import CtaBanner from '../components/CtaBanner.astro';
 import SquaresBg from '../components/SquaresBg.astro';
 import CircleBg from '../components/CircleBg.astro';
+import EngagementBg from '../components/EngagementBg.astro';
 import JsonLd from '../components/JsonLd.astro';
 
 import { site } from '../data/site';
@@ -45,7 +46,7 @@ const origin = Astro.site!.origin;
       <div
         class="home-hero-sticky flex flex-col justify-between gap-2xl pt-section-sm pb-xs pl-gutter pr-gutter lg:pr-0"
       >
-        <div class="flex max-w-measure flex-col items-start gap-xl">
+        <div class="flex max-w-measure flex-col items-start gap-hero-copy">
           <h1 class="text-h1 text-trim" data-reveal>A marketing site as good as your product.</h1>
           <p class="text-body text-text-muted max-w-subtext" data-reveal>
             Marketing sites and design systems for B2B tech startups in AI, dev tools, and
@@ -132,11 +133,17 @@ const origin = Astro.site!.origin;
 
   <!-- Pricing -->
   <Section id="pricing" space="none" border>
+    <EngagementBg />
     <SectionHeader
       eyebrow="Pick your engagement"
       heading="Three engagements. One principal."
-      support="Fixed-price for defined scope. Retainer for ongoing work. Senior throughout, regardless of the format."
-    />
+      narrowSupport
+    >
+      <Fragment slot="support">
+        Fixed-price for defined scope. Retainer for ongoing work.<br />
+        Senior throughout, regardless of the format.
+      </Fragment>
+    </SectionHeader>
     <div class="grid-ruled-3 grid md:grid-cols-3">
       {pricing.map((tier) => <PricingCard {...tier} />)}
     </div>
@@ -160,7 +167,7 @@ const origin = Astro.site!.origin;
         <p class="text-eyebrow">Behind Outredge</p>
         <h2 class="text-h2 text-trim">Principal-led, no handoffs.</h2>
       </div>
-      <div class="flex max-w-measure flex-col gap-sm">
+      <div class="flex max-w-about flex-col gap-sm">
         <p class="text-body">
           Outredge is run by{' '}
           <a href={site.linkedinUrl} rel="noopener noreferrer" target="_blank">Max Chechel</a>, a

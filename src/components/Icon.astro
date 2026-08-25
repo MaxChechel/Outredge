@@ -7,18 +7,27 @@ const icons = import.meta.glob<{ default: any }>('../assets/icons/*.svg', { eage
 
 export type IconName =
   | 'senior-expertise' | 'design-engineered' | 'first-project' | 'performance-seo'
-  | 'new-site' | 'build-figma' | 'webflow-partner';
+  | 'new-site' | 'build-figma' | 'webflow-partner'
+  | 'engagement-1' | 'engagement-2' | 'engagement-3';
 
 interface Props {
   name: IconName;
+  /**
+   * `card` is the 1.5rem glyph beside a heading; `full` fills its container and
+   * is used by the oversized decorative marks. Chosen by prop rather than by
+   * layering a width class over the default, which just made the two fight.
+   */
+  size?: 'card' | 'full';
   class?: string;
 }
 
-const { name, class: className } = Astro.props as Props;
+const { name, size = 'card', class: className } = Astro.props as Props;
+
+const SIZE = { card: 'size-icon', full: 'size-icon-full' } as const;
 
 const entry = icons[`../assets/icons/${name}.svg`];
 if (!entry) throw new Error(`Icon: no SVG at src/assets/icons/${name}.svg`);
 const Glyph = entry.default;
 ---
 
-<Glyph class:list={['size-icon shrink-0', className]} aria-hidden="true" />
+<Glyph class:list={[SIZE[size], 'shrink-0', className]} aria-hidden="true" />

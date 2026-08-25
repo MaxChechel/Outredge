@@ -6,16 +6,21 @@ import { site } from '../data/site';
 interface Props {
   id?: string;
 }
-const { id = 'cta-banner' } = Astro.props;
+const { id = 'cta-banner' } = Astro.props as Props;
 ---
 
-<Section id={id} space="lg" border>
-  <div class="flex flex-col items-center gap-lg p-md text-center">
-    <div class="flex flex-col gap-2xs">
+<Section id={id} space="none" border>
+  <!-- Padding sits on the banner, not the section, so the container hairlines
+       run unbroken into the footer. `.cta_banner` is background-2 with a rule
+       beneath and section-large padding. -->
+  <div
+    class="flex flex-col items-center gap-xl border-b border-border bg-bg-subtle px-gutter py-section-lg text-center"
+  >
+    <div class="flex flex-col gap-md">
       <h2 class="text-h2 text-trim">Ready to start?</h2>
-      <p class="text-body-lg text-text-muted max-w-measure">
-        Book a 30-minute call to scope your project, or send a brief and you&rsquo;ll get a
-        reply within one business day.
+      <p class="text-body">
+        Book a 30-minute call to scope your project,<br />
+        or send a brief and you&rsquo;ll get a reply within one business day.
       </p>
     </div>
     <div class="flex flex-wrap justify-center gap-3xs">

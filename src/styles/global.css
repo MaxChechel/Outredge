@@ -137,6 +137,10 @@
   --container-circle: 28rem;
   /* .home_hero_subtext { max-width: 51ch } */
   --container-subtext: 51ch;
+  /* .about_content { max-width: 32rem } */
+  --container-about: 32rem;
+  /* Pricing support copy: u-max-width-50ch */
+  --container-support: 50ch;
 
   --grid-columns: 12;
   --grid-gutter: 1rem;
@@ -154,6 +158,10 @@
   /* The nav sizes the wordmark by width, as the export does. */
   --spacing-nav-logo: 6rem;
   --spacing-icon: 1.5rem;
+  /* .home_hero_copy { gap: 1.75rem } — between h1, subtext and the CTA. */
+  --spacing-hero-copy: 1.75rem;
+  /* .logo_mark_sm { width: space-3 } — the mark inside the squares lattice. */
+  --spacing-mark-sm: 1rem;
   /* The ring mark above the footer. */
   --spacing-portrait: 5rem;
   --spacing-prefooter: clamp(5rem, 4.0323rem + 4.8387vw, 8rem);
@@ -816,6 +824,13 @@
     height: var(--spacing-icon);
     aspect-ratio: 1;
   }
+
+  /* Decorative marks fill their cell. */
+  .size-icon-full {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
 }
 
 /* Decorative lattice: the grid gap is the rule, so 39 cells need no borders. */
@@ -832,6 +847,21 @@
     align-items: center;
     justify-content: center;
     pointer-events: none;
+  }
+
+  /* `.squares_bg_item.is-active` fills a cell with the border colour; the export
+     drove that from a GSAP timeline picking cells at random. Here it is a hover,
+     which costs nothing and gives the lattice the same behaviour under a
+     pointer. Suppressed under reduced motion. */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .squares-bg > [data-reveal-cell] {
+      transition: background-color var(--duration-slow) var(--ease-out);
+    }
+
+    .squares-bg > [data-reveal-cell]:hover {
+      background-color: var(--color-border);
+      transition-duration: var(--duration-fast);
+    }
   }
 
   /* Below md the lattice would be a row of slivers; drop to 7 columns. */
@@ -870,11 +900,12 @@
   }
 }
 
-/* The prefooter mark is a share of the container width, not a fixed size —
-   `.prefooter_logo { width: 15% }` in the export. */
+/* The prefooter mark is a share of the container width, not a fixed size.
+   The export uses 15%; reduced on request, with the container-relative sizing
+   kept so it still scales with the layout. */
 @utility w-prefooter {
-  width: 15%;
-  min-width: 4rem;
+  width: 10%;
+  min-width: 3.5rem;
 }
 
 /* Client wordmarks. Height-driven with a width cap, matching the export's
@@ -898,5 +929,13 @@
   .button-main {
     padding: 0.9rem 1.5rem 0.75rem;
     line-height: 1;
+  }
+}
+
+/* Oversized engagement marks above pricing. The export insets each by 30% of
+   its own width, which is what keeps them proportional as the grid reflows. */
+@layer components {
+  .engagement-bg-item {
+    padding: 30%;
   }
 }

@@ -1,0 +1,21 @@
+---
+import Icon from './Icon.astro';
+
+/**
+ * Three oversized outline marks above the pricing section.
+ *
+ * `.pricing_bg_item { color: border; padding: 30% }`, with the middle cell
+ * carrying vertical rules. Decorative, so it is hidden from assistive tech.
+ */
+const ICONS = ['engagement-1', 'engagement-2', 'engagement-3'] as const;
+---
+
+<div class="grid grid-cols-3 border-t border-border text-border" aria-hidden="true">
+  {
+    ICONS.map((name, i) => (
+      <div class:list={['engagement-bg-item', i === 1 && 'border-x border-border']}>
+        <Icon name={name} size="full" />
+      </div>
+    ))
+  }
+</div>
