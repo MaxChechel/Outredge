@@ -1038,3 +1038,14 @@ Re-verified: **77 page/width checks, 0 failures**, axe-core **0 violations** acr
 viewports, Lighthouse mobile **100/100/100/100** on `/` (LCP 1.5 s, CLS 0) and
 `/case-studies/alphapoint` (LCP 1.6 s, CLS 0). The homepage still ships **no executable JavaScript** —
 its two `<script>` tags are both `application/ld+json`.
+
+**Follow-up — doubled rule under the CTA banner**
+
+The banner carried `border-bottom` and the prefooter directly beneath it carries `border-top`, so two
+1px hairlines stacked. Moved the banner's rule to the top: it now separates the FAQ above, and the
+prefooter's own top border draws the single line below. Computed after: banner
+`border-top: 1px / border-bottom: 0`, prefooter `border-top: 1px`.
+
+Applies to `/work` and `/404` as well, which use the same banner.
+
+Verified: 77 page/width checks 0 failures, axe-core 0 violations across 11 pages × 2 viewports.

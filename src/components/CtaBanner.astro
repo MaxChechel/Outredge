@@ -11,10 +11,11 @@ const { id = 'cta-banner' } = Astro.props as Props;
 
 <Section id={id} space="none" border>
   <!-- Padding sits on the banner, not the section, so the container hairlines
-       run unbroken into the footer. `.cta_banner` is background-2 with a rule
-       beneath and section-large padding. -->
+       run unbroken into the footer. The rule goes on top: the prefooter below
+       already carries a border-top, and a border-bottom here stacked against it
+       drew two hairlines. -->
   <div
-    class="flex flex-col items-center gap-xl border-b border-border bg-bg-subtle px-gutter py-section-lg text-center"
+    class="flex flex-col items-center gap-xl border-t border-border bg-bg-subtle px-gutter py-section-lg text-center"
   >
     <div class="flex flex-col gap-md">
       <h2 class="text-h2 text-trim">Ready to start?</h2>
