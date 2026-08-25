@@ -667,6 +667,41 @@
   .faq-item[open] .faq-chevron {
     transform: translateY(25%) rotate(225deg);
   }
+
+  /* Smooth open/close.
+     A <details> panel is display:none when closed, so its height cannot be
+     transitioned directly — `::details-content` is the box that can. Animating
+     to `block-size: auto` needs `interpolate-size`, scoped to the accordion
+     rather than set on :root so it does not change auto-interpolation
+     site-wide, and `transition-behavior: allow-discrete` carries the discrete
+     content-visibility flip across the same duration instead of snapping it at
+     the start.
+
+     Browsers without `::details-content` ignore all of this and keep the native
+     instant toggle, which is the current behaviour — so there is nothing to
+     guard and no way for the panel to end up stuck closed. */
+  .faq-item {
+    interpolate-size: allow-keywords;
+  }
+
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size var(--duration-base) var(--ease-out),
+      content-visibility var(--duration-base) var(--ease-out);
+    transition-behavior: allow-discrete;
+  }
+
+  .faq-item[open]::details-content {
+    block-size: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item::details-content {
+      transition: none;
+    }
+  }
 }
 
 /* Select chevron. Drawn in CSS so no icon asset or inline SVG is needed, and it

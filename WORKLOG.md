@@ -1049,3 +1049,24 @@ prefooter's own top border draws the single line below. Computed after: banner
 Applies to `/work` and `/404` as well, which use the same banner.
 
 Verified: 77 page/width checks 0 failures, axe-core 0 violations across 11 pages × 2 viewports.
+
+**Follow-up — smooth FAQ open/close**
+
+A `<details>` panel is `display: none` when closed, so its height cannot be transitioned directly.
+`::details-content` is the box that can, so the transition goes there:
+
+- `interpolate-size: allow-keywords` scoped to `.faq-item` rather than `:root`, so animating to
+  `block-size: auto` works without changing auto-interpolation site-wide;
+- `transition-behavior: allow-discrete`, which carries the discrete `content-visibility` flip across
+  the same duration instead of snapping it at the start;
+- `transition: none` under `prefers-reduced-motion` — the global reduced-motion rule uses `*`, which
+  does not match pseudo-elements, so this needed stating explicitly.
+
+Measured on open: **55px → 90 → 125 → 137 → 138**, and easing back down on close (72px mid-close,
+55px settled). Both `::details-content` and `interpolate-size` report supported.
+
+No guard needed: browsers without `::details-content` ignore the rules and keep the native instant
+toggle, which is the current behaviour, so the panel cannot end up stuck closed.
+
+**Still zero executable JavaScript on the homepage** — 0 external `.js`, 0 non-`ld+json` scripts.
+77 page/width checks 0 failures, axe-core 0 violations across 11 pages × 2 viewports.
