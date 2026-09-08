@@ -1221,3 +1221,59 @@ complete, only `light` populated), §3 (grid stays a convention — no `Grid` co
 `src/data/`), §6 (`const`/`let` only, no `var`, no jQuery, vanilla DOM only, 543 B gzipped on
 case-study pages and nothing anywhere else), §7 (every raster image goes through `astro:assets` with
 intrinsic dimensions; every SVG is a component import), §8 (`_headers`/`_redirects` unchanged).
+
+### Rulings applied — ARCHITECTURE.md amended
+
+The phase closed with six rulings. All are now in the spec, so the spec and the code no longer
+disagree anywhere. Amendments 1, 3, 4 and 5 went in as proposed. The other three below.
+
+**Amendment 2 — `spaceTop="nav"`, backed by a derived token.** The prop value is renamed at all four
+call sites. The token derivation turned out to be exact rather than approximate: the old
+`--spacing-section-top` was `clamp(8rem, 7.6774rem + 1.6129vw, 9rem)`, and `--nav-height` (4rem) plus
+`--spacing-section-md` (`clamp(4rem, 3.6774rem + 1.6129vw, 5rem)`) is that value term for term. So
+
+```css
+--spacing-section-nav: calc(var(--nav-height) + var(--spacing-section-md));
+```
+
+is not a re-tune — it renders 128px / 135.225px / 144px at 320/768/1440, identical to the literal it
+replaced, verified against computed style on all four pages that use it. `--spacing-nav` now reads
+`var(--nav-height)` too, so the 4rem literal appears once in the file rather than twice.
+
+One deviation from the ruling as written, flagged rather than absorbed: the ruling names the token
+`--space-nav`. It is `--spacing-section-nav` in the code, for two mechanical reasons. Tailwind
+generates `pt-*` from the `--spacing-*` namespace only — a `--space-*` token would produce no utility
+at all. And `--spacing-nav` already exists and already means something else: the nav's own height,
+which is what `h-nav` is built from. Naming the page-top step `--spacing-nav` would collide with it.
+`--spacing-section-nav` keeps the ruling's intent — named for the nav, derived from nav height, in
+the section-rhythm group — under the namespace rules that actually apply. Say the word if you want
+it spelled differently.
+
+**Amendment 6 — LogoStrip: promoted, not dropped.** Both halves of the discrepancy were real. The
+component I deleted was genuinely dead, and it was also genuinely *wrong*: it labelled the strip with
+an uppercase `text-eyebrow`, laid marks out as `flex flex-wrap`, and passed sizing classes down to
+`ClientLogo` by hand. The real strip on the homepage is a sentence-case `<p>` label at body size (per
+AUDIT §9 deviation 6) over a `grid grid-cols-3`, with `ClientLogo` owning its own sizing. What I
+deleted was a speculative first draft that the build had already superseded and orphaned.
+
+Promoting, not dropping, because §4.2 is a base kit for every future project rather than a record of
+what this one happened to extract — so "only one call site here" is not the test, and a spec-named
+block sitting absent is the anomaly. `src/components/blocks/LogoStrip.astro` now holds the real
+implementation, and index.astro composes it.
+
+Output is unchanged, with one thing worth recording. Passing `data-reveal` as a bare prop through the
+`...rest` spread emits `data-reveal="true"`, not the bare `data-reveal` every other reveal hook in
+the build carries — a real DOM difference, since a bare attribute parses to `""`. Passing
+`data-reveal=""` makes Astro emit it bare again. All 45 reveal hooks in `dist/` are now identical in
+form.
+
+**New §9 rule — the harness is repo code, and every check reports its executed count.** Recorded in
+the spec with both bugs as the rationale: the `/tmp` sweep that counted an empty stream and reported
+a pass over nothing, and the `tsconfig.json` `exclude` that replaced TypeScript's defaults so
+`node_modules` was type-checked, `astro check` never finished, and it had been "passing" on partial
+output read from a timeout. Two green results in one project that came from a broken harness rather
+than from correct code — which is the whole argument for the rule.
+
+Also corrected §2.1 while in there: it named the spacing tokens `--space-*`, but the namespace
+Tailwind reads to generate `p-*`/`m-*`/`gap-*` is `--spacing-*`, which is what the code has always
+used. Same class of mismatch as the `--space-nav` note above.

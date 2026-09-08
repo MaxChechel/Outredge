@@ -1,0 +1,37 @@
+---
+/**
+ * A labelled row of client wordmarks. §4.2's base-kit block.
+ *
+ * The label is a <p>, not a heading: it introduces a list of logos rather than
+ * a section of content, so making it an <h3> put a heading in the outline with
+ * nothing under it (AUDIT §9 deviation 6). It is sentence case at body size —
+ * this is not one of the uppercase section eyebrows.
+ *
+ * Sizing is ClientLogo's own business; the strip only lays marks out. Extra
+ * attributes are forwarded so the caller can attach reveal hooks or an id.
+ */
+import ClientLogo from '../atoms/ClientLogo.astro';
+import type { ClientSlug } from '../atoms/ClientLogo.astro';
+
+interface Props {
+  label: string;
+  logos: readonly { name: string; slug: ClientSlug }[];
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { label, logos, class: className, ...rest } = Astro.props as Props;
+---
+
+<div class:list={['flex flex-col gap-md', className]} {...rest}>
+  <p class="text-body text-text-muted">{label}</p>
+  <ul class="logo-strip list-bare grid grid-cols-3 items-center gap-x-lg gap-y-xs text-text-muted">
+    {
+      logos.map(({ name, slug }) => (
+        <li>
+          <ClientLogo slug={slug} title={`${name} logo`} />
+        </li>
+      ))
+    }
+  </ul>
+</div>

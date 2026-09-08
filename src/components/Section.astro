@@ -20,10 +20,10 @@ interface Props {
   space?: SectionSpace;
   /**
    * Asymmetric overrides. These compose with `space`: `space="md" spaceTop="lg"`
-   * gives lg top and md bottom. `top` is the page-top step, used by first-in-page
+   * gives lg top and md bottom. `nav` is the page-top step, used by first-in-page
    * sections to clear the fixed nav.
    */
-  spaceTop?: SectionSpace | 'top';
+  spaceTop?: SectionSpace | 'nav';
   spaceBottom?: SectionSpace;
   /** Inner max-width. `full` keeps the wrapper and skips the max-width only. */
   width?: 'main' | 'narrow' | 'full';
@@ -53,7 +53,7 @@ const PAD_TOP = {
   sm: 'pt-section-sm',
   md: 'pt-section-md',
   lg: 'pt-section-lg',
-  top: 'pt-section-top',
+  nav: 'pt-section-nav',
 } as const;
 
 const PAD_BOTTOM = {

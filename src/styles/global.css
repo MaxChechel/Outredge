@@ -118,7 +118,11 @@
   --spacing-section-sm: clamp(2.5rem, 2.3387rem + 0.8065vw, 3rem);
   --spacing-section-md: clamp(4rem, 3.6774rem + 1.6129vw, 5rem);
   --spacing-section-lg: clamp(4rem, 3.3548rem + 3.2258vw, 6rem);
-  --spacing-section-top: clamp(8rem, 7.6774rem + 1.6129vw, 9rem);
+  /* The page-top step: the first section on a page must clear the fixed nav.
+     Derived, not measured — this is exactly nav height plus one md step, so it
+     stays correct if either moves. Lives in the section-rhythm group because
+     --spacing-nav is already the nav's own height. */
+  --spacing-section-nav: calc(var(--nav-height) + var(--spacing-section-md));
 
   /* Gutter between the container edge and the viewport. */
   --spacing-gutter: clamp(1rem, 0.8387rem + 0.8065vw, 1.5rem);
@@ -147,7 +151,7 @@
   /* Control heights live in the spacing namespace so `h-nav`, `h-button-md`
      and friends generate. --nav-height is also read directly in CSS. */
   --nav-height: 4rem;
-  --spacing-nav: 4rem;
+  --spacing-nav: var(--nav-height);
   --spacing-button-md: 3rem;
   --spacing-button-lg: 5rem;
   /* Client wordmarks arrive with inconsistent viewBoxes (some 48 tall, some 24).

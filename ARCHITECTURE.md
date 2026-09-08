@@ -29,8 +29,10 @@ Raw values, no usage meaning. *(Lumos: the variables panel.)*
 - Color scales: `--color-neutral-100…950`, brand, accent.
 - Fluid type scale: every step `clamp()` mobile→desktop. **Breakpointless — type
   never jumps at a media query.** Only steps actually used.
-- Fluid spacing scale: `--space-2xs…2xl` as `clamp()`, plus section padding
-  tokens `--space-section-sm/md/lg`.
+- Fluid spacing scale: `--spacing-2xs…2xl` as `clamp()`, plus section padding
+  tokens `--spacing-section-none/sm/md/lg` and the derived `--spacing-section-nav`.
+  The namespace is `--spacing-*`, not `--space-*`: that is the one Tailwind reads
+  to generate `p-*`, `m-*` and `gap-*`.
 - Container tokens: `main` / `narrow` / `measure` — **never `sm/md/lg`**
   (`max-w-*` resolves the spacing namespace first; silent collision).
 - Radii, borders, shadows, durations, easings. Fonts: only weights applied.
@@ -99,14 +101,26 @@ The indivisible primitives every project ships:
   with height + `max-width`.
 - **`VisuallyHidden`** — SR-only text utility.
 
+Atoms may be non-visual. `JsonLd`, which emits an `application/ld+json` block
+and renders nothing, is an atom: indivisible and context-free is the test, not
+whether it paints.
+
 ### 4.2 Blocks
 Composed pieces, still context-free:
 
 `SectionHeader` (eyebrow + heading + lede; heading level as prop),
-`Card` (generic shell; `WorkCard`, `FeatureCard`, `PricingCard`, `QuoteCard`
-extend it per project), `Faq`/accordion (native `<details>` first),
-`CtaBanner`, `LogoStrip`, `Figure` (image + optional caption),
-`Clip` (video, carries all §7 rules).
+the card family — `WorkCard`, `FeatureCard`, `PricingCard`, `QuoteCard` —
+`Faq`/accordion (native `<details>` first), `CtaBanner`,
+`LogoStrip` (label + row of `ClientLogo` marks).
+
+There is **no generic `Card` shell**. The cards share no structure — different
+elements, different internal grids, different interaction — so a common parent
+would be a bordered `<div>`, which is a class, not a component. They are four
+siblings, not four subclasses. *(Amended after the Outredge build; the original
+spec listed a `Card` the code never had a use for.)*
+
+`Figure` and `Clip` are **not** blocks; they are content vocabulary and live in
+§4.5. They are only ever reachable from an MDX body.
 
 Block rules:
 - **Heading level is always a prop** (`headingLevel={2|3}`) — same block, correct
@@ -129,8 +143,8 @@ Block rules:
 ```astro
 <Section
   as="section"        // section | div | header | footer   (default: section)
-  space="md"          // sm | md | lg — symmetric vertical padding
-  spaceTop="lg"       // optional asymmetric override of the top only
+  space="md"          // none | sm | md | lg — symmetric vertical padding
+  spaceTop="nav"      // optional override of the top only; adds "nav"
   spaceBottom="sm"    // optional asymmetric override of the bottom only
   width="main"        // main | narrow | full              (default: main)
   theme="dark"        // optional — sets data-theme, children adapt
@@ -143,6 +157,19 @@ Block rules:
 - Section owns **all vertical rhythm**. Pages never make spacing decisions; no
   spacer divs, ever.
 - Overrides compose: `space="md" spaceTop="lg"` → lg top, md bottom.
+- **`space="none"`** is a real step, not an escape hatch. Sections that butt
+  directly against the next — separated by a border or a background change
+  rather than by space — need zero padding on an edge. A named step keeps that
+  decision inside Section; the alternative is a bespoke class per site.
+- **`spaceTop="nav"`** is the page-top step: the first section on a page must
+  clear the fixed nav. It is not a member of the section scale, and it is
+  **derived, never measured** — the token is nav height plus one `md` step:
+  ```css
+  --spacing-section-nav: calc(var(--nav-height) + var(--spacing-section-md));
+  ```
+  so it stays correct when either input moves. It sits in the section-rhythm
+  group because the `--spacing-nav` name is already the nav's own height, and
+  in the `--spacing-*` namespace because that is what generates `pt-*`.
 - `width="full"` keeps the wrapper (theme + spacing behave identically) and
   skips the max-width container — full-bleed is a container variant, not a
   different component.
@@ -204,6 +231,22 @@ missing required slot **fails the build**.
   violations.
 - Lighthouse mobile, homepage + heaviest page, behind real host config:
   **100/100/100/100 is the bar**, numbers recorded.
+
+**The harness is part of the repo.** It lives in `scripts/verify/`, versioned
+alongside the code it checks, and is never a scratch script in `/tmp`.
+
+**Every check reports its own executed count, and a pass with zero reported
+checks is a failure.** A verification that cannot say how much it verified has
+not verified anything.
+
+Both rules are paid for. In the Outredge build, (1) a sweep script was deleted
+out of `/tmp` between runs, so `grep -c` counted an empty stream and reported a
+clean pass over nothing; and (2) `tsconfig.json` set `exclude` without
+TypeScript's defaults — `exclude` replaces rather than extends — so
+`node_modules` was type-checked, `astro check` never finished, and it had been
+"passing" on partial output read from a timeout. Two green results in one
+project came from a broken harness rather than from correct code. Trusting a
+check means being able to show what it ran.
 
 ## 10. Process
 

@@ -580,3 +580,21 @@ places it deliberately does not, each because the original was broken. This is t
 
 Type-scale quirks were **not** corrected — see §8.3. The `h6`/`large` inversion is
 transcribed faithfully as a known quirk, per ruling.
+
+### 8.x Unsanctioned delta: prose-link underline colour
+
+Distinct from the table above. Everything in that table is a deliberate deviation, sanctioned
+because the original was broken. This one is neither: it is a place where the rebuild drifted from
+the export by accident, and the ruling is to put it back.
+
+The export draws the prose-link underline in the border colour — `.text_link` takes its underline
+from `--border-color` rather than from the text colour, so the rule sits lighter than the word it
+sits under. Our `.text-link` uses `currentColor`, which makes the underline the same weight as the
+text. Nothing prompted the change; it was a substitution made while transcribing, of the same kind
+as the other "plausible-looking value that was not the specified one" errors in this project.
+
+Found during the ARCHITECTURE.md alignment phase, where the rule was that rendered output stays
+pixel-identical — so it was recorded rather than fixed, since correcting it there would have broken
+that phase's own constraint. **Sanctioned for 5-lite:** restore the export's border-colour underline
+on prose links. Affects `.text-link` in `global.css` and nothing else; `TextLink` already routes
+every prose link through that one rule.
