@@ -1,15 +1,14 @@
 ---
 /**
- * Section shell — owns vertical rhythm, container width, and theme.
+ * Section — the page grammar (§4.4).
  *
- * Pages compose sections; they never make spacing decisions. Everything that
- * would otherwise be a copied wrapper-div-plus-class-string lives here.
- *
- * The Webflow export built rhythm out of empty <div class="u-section-spacer">
- * elements — 14 on the homepage alone. This replaces all of them with padding.
+ * The only thing pages compose. Section owns all vertical rhythm, the container
+ * width and the theme; pages make no spacing decisions and there are no spacer
+ * divs anywhere. The Webflow export built rhythm out of empty
+ * `<div class="u-section-spacer">` elements — 14 on the homepage alone.
  */
 export type SectionSpace = 'none' | 'sm' | 'md' | 'lg';
-/** Widen this union as themes are added to global.css. */
+/** Widen as themes are added to global.css. */
 export type SectionTheme = 'light';
 
 interface Props {
@@ -17,16 +16,17 @@ interface Props {
   as?: 'section' | 'div' | 'header' | 'footer' | 'article' | 'aside';
   /** Remaps the semantic colour tokens for this section and its descendants. */
   theme?: SectionTheme;
-  /** Vertical padding, top and bottom. */
+  /** Symmetric vertical padding. */
   space?: SectionSpace;
-  /** Override just the top. `top` clears the fixed nav on first-in-page sections. */
+  /**
+   * Asymmetric overrides. These compose with `space`: `space="md" spaceTop="lg"`
+   * gives lg top and md bottom. `top` is the page-top step, used by first-in-page
+   * sections to clear the fixed nav.
+   */
   spaceTop?: SectionSpace | 'top';
-  /** Override just the bottom. */
   spaceBottom?: SectionSpace;
-  /** Inner max-width. `full` opts out of the container entirely. */
-  width?: 'main' | 'narrow' | 'measure' | 'full';
-  /** The 1px vertical hairlines framing the container — a signature of the design. */
-  border?: boolean;
+  /** Inner max-width. `full` keeps the wrapper and skips the max-width only. */
+  width?: 'main' | 'narrow' | 'full';
   id?: string;
   class?: string;
   /** Applied to the inner container, for grid/flex composition by the caller. */
@@ -42,7 +42,6 @@ const {
   spaceTop,
   spaceBottom,
   width = 'main',
-  border = false,
   id,
   class: className,
   innerClass,
@@ -64,10 +63,14 @@ const PAD_BOTTOM = {
   lg: 'pb-section-lg',
 } as const;
 
+/**
+ * `full` maps to no max-width rather than to no wrapper: full-bleed is a
+ * container variant, not a different component, so theme and spacing behave
+ * identically either way.
+ */
 const WIDTH = {
   main: 'max-w-main',
   narrow: 'max-w-narrow',
-  measure: 'max-w-measure',
   full: '',
 } as const;
 
@@ -82,20 +85,14 @@ const isFullBleed = width === 'full';
   class:list={['relative', paddingTop, paddingBottom, className]}
   {...rest}
 >
-  {
-    isFullBleed ? (
-      <slot />
-    ) : (
-      <div
-        class:list={[
-          'container-gutter relative',
-          WIDTH[width],
-          border && 'border-x border-border',
-          innerClass,
-        ]}
-      >
-        <slot />
-      </div>
-    )
-  }
+  <div
+    class:list={[
+      'relative',
+      isFullBleed ? 'w-full' : 'container-gutter',
+      WIDTH[width],
+      innerClass,
+    ]}
+  >
+    <slot />
+  </div>
 </Tag>

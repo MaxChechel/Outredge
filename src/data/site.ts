@@ -16,8 +16,3 @@ export const navLinks = [
   { href: '/#approach', label: 'Approach' },
   { href: '/#pricing', label: 'How it works' },
 ] as const;
-
-export const footerLinks = [
-  ...navLinks,
-  { href: '/contact', label: 'Contact' },
-] as const;

@@ -34,7 +34,7 @@ OFFSETS: dict[str, float] = {
 }
 
 sys.path.insert(0, str(ROOT / 'scripts'))
-from stage_videos import DORMANT, RENAME  # noqa: E402  (shared source of truth)
+from lib.clips import DORMANT, RENAME  # noqa: E402  (shared source of truth)
 
 
 def ffmpeg_exe() -> str:

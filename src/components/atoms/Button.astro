@@ -1,0 +1,102 @@
+---
+import VisuallyHidden from './VisuallyHidden.astro';
+
+/**
+ * Canonical button atom (§4.1).
+ *
+ * Renders `<a>` when `href` is present and `<button>` otherwise, with the right
+ * semantics either way. Colour comes entirely from the button token group in
+ * global.css, so a theme swap recolours every button with no variant classes in
+ * markup.
+ */
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
+export type ButtonSize = 'sm' | 'md';
+export type ButtonIcon = 'arrow' | 'play' | 'close';
+
+interface Props {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  /** Typed per §4.1; extend the union rather than passing arbitrary markup. */
+  icon?: ButtonIcon;
+  iconPosition?: 'start' | 'end';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  /** Adds rel/target and the "opens in a new tab" hint. */
+  external?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconPosition = 'end',
+  href,
+  type = 'button',
+  external = false,
+  class: className,
+  ...rest
+} = Astro.props as Props;
+
+const Tag = href ? 'a' : 'button';
+
+const VARIANT = {
+  primary: [
+    'bg-button-primary-bg text-button-primary-text border-button-primary-border',
+    'hover:bg-button-primary-bg-hover hover:text-button-primary-text-hover',
+    'hover:border-button-primary-border-hover',
+  ],
+  secondary: [
+    'bg-button-secondary-bg text-button-secondary-text border-button-secondary-border',
+    'hover:bg-button-secondary-bg-hover hover:text-button-secondary-text-hover',
+    'hover:border-button-secondary-border-hover',
+  ],
+  // No border, no fill — for tertiary actions sitting inside dense UI.
+  ghost: ['bg-transparent text-text border-transparent', 'hover:text-text-muted'],
+} as const;
+
+const SIZE = { sm: 'button-sm text-body-sm', md: 'button-md text-body' } as const;
+
+/** Inline, currentColor, sized to the cap height of the label. */
+const ICON_PATHS = {
+  arrow: 'M2 8h12M9.5 3.5 14 8l-4.5 4.5',
+  play: 'M4.5 2.5v11l9-5.5-9-5.5Z',
+  close: 'm3.5 3.5 9 9m0-9-9 9',
+} as const;
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : type}
+  rel={external ? 'noopener noreferrer' : undefined}
+  target={external ? '_blank' : undefined}
+  class:list={[
+    'inline-flex items-center justify-center gap-3xs',
+    'rounded-sm border whitespace-nowrap',
+    'transition-colors duration-base ease-out',
+    // A disabled control must read as disabled.
+    'disabled:pointer-events-none disabled:opacity-40',
+    SIZE[size],
+    VARIANT[variant],
+    className,
+  ]}
+  {...rest}
+>
+  {
+    icon && iconPosition === 'start' && (
+      <svg class="button-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d={ICON_PATHS[icon]} stroke="currentColor" stroke-width="1.25" />
+      </svg>
+    )
+  }
+  <slot />
+  {
+    icon && iconPosition === 'end' && (
+      <svg class="button-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d={ICON_PATHS[icon]} stroke="currentColor" stroke-width="1.25" />
+      </svg>
+    )
+  }
+  {external && <VisuallyHidden> (opens in a new tab)</VisuallyHidden>}
+</Tag>

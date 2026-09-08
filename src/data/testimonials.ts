@@ -1,4 +1,4 @@
-import type { ClientSlug } from '../components/ClientLogo.astro';
+import type { ClientSlug } from '../components/atoms/ClientLogo.astro';
 
 /**
  * Client testimonials, verbatim from Contra.

@@ -1,7 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "webflow-export", ".venv"],
+  "exclude": ["node_modules", "dist", "webflow-export", "drafts", ".venv", "scripts"],
   "compilerOptions": {
     "strictNullChecks": true,
     "allowJs": true,

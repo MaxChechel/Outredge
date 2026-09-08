@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../components/shells/BaseLayout.astro';
 import Section from '../components/Section.astro';
-import WorkCard from '../components/WorkCard.astro';
-import CtaBanner from '../components/CtaBanner.astro';
+import WorkCard from '../components/blocks/WorkCard.astro';
+import CtaBanner from '../components/blocks/CtaBanner.astro';
 import { getWork } from '../lib/work';
 
 const work = await getWork();

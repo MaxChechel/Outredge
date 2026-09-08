@@ -480,6 +480,12 @@
   }
 
   .text-body-lg { font-size: var(--text-lg); }
+
+  /* §2.5 names `lede` as a type style. Same values the Lede component composed
+     inline, now declared once. */
+  .text-lede {
+    font-size: var(--text-lg);
+  }
   .text-body    { font-size: var(--text-base); }
   .text-body-sm { font-size: var(--text-sm); }
   .text-caption { font-size: var(--text-xs); }
@@ -993,9 +999,21 @@
    height, and the top padding is 0.15rem greater than the bottom — optical
    centring against the cap height rather than the line box. */
 @layer components {
-  .button-main {
+  .button-md {
     padding: 0.9rem 1.5rem 0.75rem;
     line-height: 1;
+  }
+
+  /* Same optical offset, one step down. */
+  .button-sm {
+    padding: 0.65rem 1rem 0.5rem;
+    line-height: 1;
+  }
+
+  .button-icon {
+    width: 1em;
+    height: 1em;
+    flex: none;
   }
 }
 
@@ -1088,5 +1106,18 @@
     .faq-item:hover {
       background-color: var(--color-surface-hover);
     }
+  }
+}
+
+/* Prose link (§4.1 TextLink).
+   Deliberately identical to the `a:not([class])` base rule, so adopting the
+   component changes no pixels — this phase is a refactor. Note the delta from
+   the source: the export's `.text_link` draws a border-bottom in the *border*
+   colour, where our build has always drawn a text-decoration underline in
+   currentColor. Recorded in WORKLOG as a fidelity question, not changed here. */
+@layer components {
+  .text-link {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
 }

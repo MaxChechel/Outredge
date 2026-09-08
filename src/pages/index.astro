@@ -1,21 +1,22 @@
 ---
 import { Image } from 'astro:assets';
 
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../components/shells/BaseLayout.astro';
 import Section from '../components/Section.astro';
-import SectionHeader from '../components/SectionHeader.astro';
-import Button from '../components/Button.astro';
-import ClientLogo from '../components/ClientLogo.astro';
-import HomeWorkCard from '../components/HomeWorkCard.astro';
-import FeatureCard from '../components/FeatureCard.astro';
-import QuoteCard from '../components/QuoteCard.astro';
-import PricingCard from '../components/PricingCard.astro';
-import Faq from '../components/Faq.astro';
-import CtaBanner from '../components/CtaBanner.astro';
-import SquaresBg from '../components/SquaresBg.astro';
-import CircleBg from '../components/CircleBg.astro';
-import EngagementBg from '../components/EngagementBg.astro';
-import JsonLd from '../components/JsonLd.astro';
+import SectionHeader from '../components/blocks/SectionHeader.astro';
+import Button from '../components/atoms/Button.astro';
+import TextLink from '../components/atoms/TextLink.astro';
+import ClientLogo from '../components/atoms/ClientLogo.astro';
+import HomeWorkCard from '../components/blocks/HomeWorkCard.astro';
+import FeatureCard from '../components/blocks/FeatureCard.astro';
+import QuoteCard from '../components/blocks/QuoteCard.astro';
+import PricingCard from '../components/blocks/PricingCard.astro';
+import Faq from '../components/blocks/Faq.astro';
+import CtaBanner from '../components/blocks/CtaBanner.astro';
+import SquaresBg from '../components/blocks/SquaresBg.astro';
+import CircleBg from '../components/blocks/CircleBg.astro';
+import EngagementBg from '../components/blocks/EngagementBg.astro';
+import JsonLd from '../components/atoms/JsonLd.astro';
 
 import { site } from '../data/site';
 import { trustedBy, features, pricing, faq } from '../data/homepage';
@@ -56,7 +57,7 @@ const origin = Astro.site!.origin;
             <Button href={site.bookingUrl} variant="primary" external>Book a call</Button>
             <p class="text-body-sm text-text-muted">
               {site.reviewCount} five-star reviews on{' '}
-              <a href={site.contraUrl} rel="noopener noreferrer" target="_blank">Contra</a>
+              <TextLink href={site.contraUrl} external>Contra</TextLink>
             </p>
           </div>
         </div>
@@ -127,7 +128,7 @@ const origin = Astro.site!.origin;
     </div>
     <p class="text-body-sm text-text-muted px-gutter py-section-sm text-center">
       Read all reviews on{' '}
-      <a href={site.contraUrl} rel="noopener noreferrer" target="_blank">Contra</a>
+      <TextLink href={site.contraUrl} external>Contra</TextLink>
     </p>
   </Section>
 
@@ -170,7 +171,7 @@ const origin = Astro.site!.origin;
       <div class="flex max-w-about flex-col gap-sm">
         <p class="text-body">
           Outredge is run by{' '}
-          <a href={site.linkedinUrl} rel="noopener noreferrer" target="_blank">Max Chechel</a>, a
+          <TextLink href={site.linkedinUrl} external>Max Chechel</TextLink>, a
           design engineer who has built marketing sites for Replit, Lindy, Sphere, and others,
           and was previously Lead developer at Juice and Paper Tiger.
         </p>
@@ -191,7 +192,7 @@ const origin = Astro.site!.origin;
         <h2 class="text-h2 text-trim">Questions, answered.</h2>
         <p class="text-body-sm text-text-muted">
           Still got something specific?{' '}
-          <a href={site.bookingUrl} rel="noopener noreferrer" target="_blank">Book a call</a>, most
+          <TextLink href={site.bookingUrl} external>Book a call</TextLink>, most
           answers take 5 minutes.
         </p>
       </div>

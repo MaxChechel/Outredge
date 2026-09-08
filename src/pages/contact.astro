@@ -1,8 +1,9 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../components/shells/BaseLayout.astro';
 import Section from '../components/Section.astro';
-import Button from '../components/Button.astro';
-import FormField from '../components/FormField.astro';
+import Button from '../components/atoms/Button.astro';
+import TextLink from '../components/atoms/TextLink.astro';
+import FormField from '../components/atoms/FormField.astro';
 import { site } from '../data/site';
 
 /**
@@ -149,10 +150,8 @@ const budgets = [
             !live && (
               <p class="text-body-sm text-text-muted">
                 The form is not connected yet &mdash; use{' '}
-                <a href={site.bookingUrl} rel="noopener noreferrer" target="_blank">
-                  the booking link
-                </a>{' '}
-                or email <a href={`mailto:${site.email}`}>{site.email}</a> in the meantime.
+                <TextLink href={site.bookingUrl} external>the booking link</TextLink>{' '}
+                or email <TextLink href={`mailto:${site.email}`}>{site.email}</TextLink> in the meantime.
               </p>
             )
           }

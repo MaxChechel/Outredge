@@ -16,8 +16,8 @@
  * (`.logo_img { height: 2.5rem; max-width: 8rem }`), which is what keeps a wide
  * mark like Alphapoint from towering over the rest.
  */
-const logos = import.meta.glob<{ default: any }>('../assets/clients/*.svg', { eager: true });
-const sources = import.meta.glob<string>('../assets/clients/*.svg', {
+const logos = import.meta.glob<{ default: any }>('../../assets/clients/*.svg', { eager: true });
+const sources = import.meta.glob<string>('../../assets/clients/*.svg', {
   eager: true,
   query: '?raw',
   import: 'default',
@@ -37,7 +37,7 @@ interface Props {
 
 const { slug, title, class: className } = Astro.props as Props;
 
-const key = `../assets/clients/${slug}.svg`;
+const key = `../../assets/clients/${slug}.svg`;
 const entry = logos[key];
 if (!entry) {
   throw new Error(`ClientLogo: no SVG for "${slug}". Expected src/assets/clients/${slug}.svg.`);

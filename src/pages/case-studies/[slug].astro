@@ -1,17 +1,18 @@
 ---
 import { getCollection, render } from 'astro:content';
 
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout from '../../components/shells/BaseLayout.astro';
 import Section from '../../components/Section.astro';
-import Button from '../../components/Button.astro';
-import ClientLogo from '../../components/ClientLogo.astro';
-import type { ClientSlug } from '../../components/ClientLogo.astro';
-import QuoteCard from '../../components/QuoteCard.astro';
-import CtaBanner from '../../components/CtaBanner.astro';
+import Button from '../../components/atoms/Button.astro';
+import TextLink from '../../components/atoms/TextLink.astro';
+import ClientLogo from '../../components/atoms/ClientLogo.astro';
+import type { ClientSlug } from '../../components/atoms/ClientLogo.astro';
+import QuoteCard from '../../components/blocks/QuoteCard.astro';
+import CtaBanner from '../../components/blocks/CtaBanner.astro';
 import Clip from '../../components/mdx/Clip.astro';
 import { testimonials } from '../../data/testimonials';
 import { ogImageUrl } from '../../lib/og';
-import JsonLd from '../../components/JsonLd.astro';
+import JsonLd from '../../components/atoms/JsonLd.astro';
 import { caseStudySchema } from '../../lib/schema';
 
 // No `: GetStaticPaths` annotation: it widens the return type and Astro then
@@ -100,7 +101,7 @@ const quote = data.testimonial
               data.via && (
                 <>
                   {' '}&middot; via{' '}
-                  <a href={data.viaUrl} rel="noopener noreferrer" target="_blank">{data.via}</a>
+                  <TextLink href={data.viaUrl!} external>{data.via}</TextLink>
                 </>
               )
             }

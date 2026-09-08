@@ -1,20 +1,8 @@
-#!/usr/bin/env python3
-"""Stage the export's transcoded clips into public/videos/ under their published names.
+"""Shared clip name map. Imported by stage-videos.py and grab-posters.py.
 
-Only needed while VIDEO_BASE points at a local path. Once the CDN pull zone
-hostname is set in src/lib/media.ts, upload the same files there instead and
-public/videos/ can be deleted — it is gitignored either way.
-
-    python3 scripts/stage-videos.py
+Runnable scripts are kebab-case; this is an importable library module, so it is
+snake_case — Python cannot import a hyphenated module name.
 """
-
-import shutil
-import sys
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / 'webflow-export' / 'videos'
-OUT = ROOT / 'public' / 'videos'
 
 # Export name -> published name. Kebab-case, prefixed with the case study slug.
 # Also fixes the export's "Alphappint" typo and the one opaque Cloudinary id.
@@ -57,29 +45,3 @@ RENAME = {
 # fully documented, but skipped so re-running does not resurrect assets that
 # were deliberately taken out of the pipeline. See drafts/README.md.
 DORMANT = {'XBOW-1', 'XBOW-2', 'XBOW-3'}
-
-
-def main() -> int:
-    OUT.mkdir(parents=True, exist_ok=True)
-    total = 0
-    staged = 0
-    for old, new in RENAME.items():
-        if old in DORMANT:
-            continue
-        src = SRC / f'{old}_mp4.mp4'
-        if not src.exists():
-            print(f'missing source: {src}', file=sys.stderr)
-            return 1
-        dst = OUT / f'{new}.mp4'
-        shutil.copy2(src, dst)
-        total += dst.stat().st_size
-        staged += 1
-    print(
-        f'{staged} clips staged in {OUT.relative_to(ROOT)} ({total / 1024 / 1024:.1f} MB); '
-        f'{len(DORMANT)} dormant, skipped'
-    )
-    return 0
-
-
-if __name__ == '__main__':
-    raise SystemExit(main())

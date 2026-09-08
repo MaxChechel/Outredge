@@ -1091,3 +1091,133 @@ Nothing else draws a rule between the FAQ and the footer. The annotated state �
 bottom rule — is exactly what the build looked like *before* that commit.
 
 Verified: 77 page/width checks 0 failures, axe-core 0 violations across 11 pages × 2 viewports.
+
+---
+
+## 2026-09-08 — Spec alignment + cleanup (pre-5-lite)
+
+`ARCHITECTURE.md` read in full. It was not present at the start of this session — first check found
+nothing in the working tree, in git, or on `origin/main` — and appeared a few minutes later, so the
+first pass here is against the version timestamped 08:27.
+
+### PROPOSAL — tier layout (§4), before any file moves
+
+```
+src/
+  components/
+    Section.astro              tier 4 — the page grammar, sits above the tiers
+    atoms/                     §4.1 indivisible primitives
+      Button.astro
+      TextLink.astro           new
+      VisuallyHidden.astro     new
+      FormField.astro
+      Logo.astro
+      ClientLogo.astro
+      RingMark.astro
+      Icon.astro
+      JsonLd.astro
+    blocks/                    §4.2 composed, context-free
+      SectionHeader.astro
+      WorkCard.astro
+      HomeWorkCard.astro
+      FeatureCard.astro
+      PricingCard.astro
+      QuoteCard.astro
+      Faq.astro
+      CtaBanner.astro
+      CircleBg.astro
+      SquaresBg.astro
+      EngagementBg.astro
+    shells/                    §4.3
+      BaseLayout.astro         moved out of src/layouts/
+      Nav.astro
+      Footer.astro
+    mdx/                       §4.5 content vocabulary
+      CaseSection.astro  Figure.astro  Clip.astro  Lede.astro
+```
+
+Three judgement calls in that layout, flagged rather than assumed:
+
+1. **`BaseLayout` moves out of `src/layouts/`.** §4.3 names it a shell alongside Nav and Footer, so
+   it goes with them. Astro does not require `src/layouts/`; the directory disappears.
+2. **`Figure` and `Clip` stay in `mdx/`.** §4.2 lists them as blocks and §4.5 lists them as content
+   vocabulary. They are only ever used from MDX bodies, so §4.5 wins; noting the overlap in case the
+   spec should say so.
+3. **`JsonLd` filed as an atom.** It is indivisible and context-free but emits `application/ld+json`
+   rather than anything visual, so it fits no tier cleanly. Atom is the closest.
+
+### Convention sweep — the whole codebase against ARCHITECTURE.md
+
+Every rule the spec states, checked against the code. Findings below: each one is either fixed, or
+argued as a spec amendment. Nothing was reconciled silently in either direction.
+
+**Fixed in this phase**
+
+- **§4.4 — `Section` had a `border` prop that is not in the API.** It rendered `border-x` hairlines
+  on the inner container. Zero call sites used it — it was left over from an early read of the
+  export, where the hairlines turned out to belong to the page shell, not to sections. Deleted.
+  Being unused, removing it changes no pixels.
+- **§4.4 — `Section` had a `measure` width.** Also unused; the third container width belongs to
+  prose, which gets it from the type styles. Deleted, leaving the spec's `main | narrow | full`.
+- **§4.4 — `width="full"` used to skip the wrapper entirely**, so full-bleed sections silently lost
+  theme and gutter behaviour. Now the wrapper always renders and `full` only drops the max-width.
+  No current page uses `width="full"`; it is API the spec requires, kept ahead of a caller.
+- **§4.1 — `Button` was a bespoke component**, not the canonical API. Rebuilt to
+  `variant` × `size` × typed `icon`/`iconPosition`, with `<a>`/`<button>` chosen from `href`.
+  Every existing call site mapped onto `primary` or `secondary` — nothing needed a fourth variant,
+  so there was no ruling to ask for.
+- **§4.1 — no `TextLink`.** Prose links were bare `<a>` picking up the base rule. Created it, adopted
+  at all 6 prose call sites. `.text-link` is deliberately byte-identical to the `a:not([class])` base
+  rule, so adoption moved nothing.
+- **§4.1 — no `VisuallyHidden`.** `sr-only` was hand-applied. Created it and adopted it.
+- **§4 — no tier structure.** All components sat flat in `src/components/`. Reorganised into
+  `atoms/`, `blocks/`, `shells/`, with `Section` at the root as page grammar. Layout proposed above.
+- **§2.5 — the `lede` type style was missing** from the type-style layer even though the spec names
+  it. Lede copy was setting `--text-lg` inline at each call site. `.text-lede` added and adopted.
+  (`caption` and `eyebrow` were already present and correctly named.)
+- **§9 — the verification harness lived in `/tmp`.** It was cleared twice mid-project and once
+  produced a false pass (a `grep -c` over a stream that was empty because the script had vanished).
+  Moved in-repo to `scripts/verify/`, and `sweep.mjs` now prints its own check count so an empty run
+  cannot read as a pass. This is an addition rather than a move of existing scripts; flagging it as
+  a judgement call, on the grounds that a verification standard the repo cannot re-run is not one.
+- **Verification integrity — `tsconfig.json` set `exclude` without the defaults.** TypeScript's
+  `exclude` *replaces* rather than extends, so `node_modules` was being type-checked and
+  `astro check` took minutes. It had been passing on partial output. Fixed; the check now runs in
+  seconds and is clean. This is the second time in this project a green result came from a broken
+  harness rather than from correct code.
+
+**Proposed spec amendments — code is right, spec should change**
+
+1. **§4.4 `space` needs a `none` step.** The spec gives `sm | md | lg`. Ten sections legitimately
+   need zero padding on one edge: sections that butt directly against the next, where the visual
+   separation is a border or a background change rather than space. The alternative is a bespoke
+   class on every one of them, which is worse than a named step. Implemented as `none`.
+2. **§4.4 `spaceTop` needs a `top` step.** The first section on every page has to clear the fixed
+   nav. That distance is not a member of the section scale — it is nav height plus a step — and it
+   appears on 4 pages. Encoding it as a named step keeps the nav height in one place; the
+   alternative is arithmetic repeated per page. `spaceTop` accepts `SectionSpace | 'top'`.
+3. **§4.2's generic `Card` shell does not exist, and should not.** Four cards (`WorkCard`,
+   `FeatureCard`, `PricingCard`, `QuoteCard`) share no structure — different elements, different
+   internal grids, different interaction. A common shell would be a wrapper `<div>` with a border,
+   which is a class, not a component. Proposing §4.2 drop the generic `Card` and list the four
+   concrete blocks instead.
+4. **`Figure` and `Clip` are listed under both §4.2 (blocks) and §4.5 (content vocabulary).** They
+   live in `mdx/`. Proposing §4.2 drop them, since they are only ever reachable from an MDX body.
+5. **`JsonLd` has no tier.** Filed under `atoms/` as the closest fit. Proposing §4.1 note that atoms
+   may be non-visual.
+
+**Known deviation, deliberately left**
+
+- **`.text_link` underline colour.** The export draws the prose-link underline in the border colour;
+  our build uses `currentColor`. This is a pre-existing fidelity delta, not something this phase
+  introduced, and this phase's rule is that rendered output stays pixel-identical — so changing it
+  here would break the phase's own constraint. Raising it as a separate one-line question rather
+  than folding it into a refactor.
+
+**Checked and clean** — §2.1/2.2 (no stock Tailwind scale survives; the numeric grid scale is the
+sanctioned exception), §2.3 (`@theme static` throughout, no `inline`), §2.4 (theme mechanism
+complete, only `light` populated), §3 (grid stays a convention — no `Grid` component was invented),
+§4.2 (heading level is a prop on every block that renders one), §5 (each list has one source in
+`src/data/`), §6 (`const`/`let` only, no `var`, no jQuery, vanilla DOM only, 543 B gzipped on
+case-study pages and nothing anywhere else), §7 (every raster image goes through `astro:assets` with
+intrinsic dimensions; every SVG is a component import), §8 (`_headers`/`_redirects` unchanged).

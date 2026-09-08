@@ -1,0 +1,32 @@
+---
+/**
+ * Prose link with the house underline treatment (§4.1).
+ *
+ * The underline sits in the border colour and comes up to currentColor on
+ * hover, which is the export's `.text_link` behaviour. `external` adds the
+ * rel/target pair and a screen-reader hint, so a link that opens a new tab
+ * always announces that it will.
+ */
+import VisuallyHidden from './VisuallyHidden.astro';
+
+interface Props {
+  href: string;
+  /** Adds rel/target and the "opens in a new tab" hint. */
+  external?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { href, external = false, class: className, ...rest } = Astro.props as Props;
+---
+
+<a
+  href={href}
+  rel={external ? 'noopener noreferrer' : undefined}
+  target={external ? '_blank' : undefined}
+  class:list={['text-link', className]}
+  {...rest}
+>
+  <slot />
+  {external && <VisuallyHidden> (opens in a new tab)</VisuallyHidden>}
+</a>
